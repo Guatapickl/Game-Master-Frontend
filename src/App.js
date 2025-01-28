@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const API_URL = "https://quantumgamemaster.herokuapp.com";
+const API_URL = "https://quantumgamemaster-08115932719b.herokuapp.com";
 
 function App() {
   const [messages, setMessages] = useState([]);
