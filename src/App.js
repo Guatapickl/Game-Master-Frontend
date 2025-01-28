@@ -98,7 +98,7 @@ function App() {
 
             const data = await response.json();
             console.log("Parsed response data:", data);
-            
+
             if (data.cookie) {
               console.log("Server requested cookie set:", data.cookie);
             }
@@ -156,10 +156,10 @@ function App() {
     };
   
     // Conditionally render
-    if (!isNameKnown) {
+    /*if (!isNameKnown) {
       // Show the dark portal
       return <DarkPortal onNameSubmit={handleNameSubmit} />;
-    }
+    }/*/
 
     // If we know the name, show the main interface
     return (
@@ -173,7 +173,8 @@ function App() {
           display: "flex",
           justifyContent: "center",
         }}>
-          <DIDAvatar textToSpeak={avatarMessage} />
+        {/* Commenting out the DIDAvatar component for now: */}
+        {/* <DIDAvatar textToSpeak={avatarMessage} /> */}
         </div>
   
         {/* MIDDLE SECTION: Chat Area */}
