@@ -14,6 +14,14 @@ function App() {
   // check if name is known
   //const isNameKnown = currentPlayer && currentPlayer !== "No_name";
 
+  // Read player name from localStorage on component mount:
+  useEffect(() => {
+    const storedName = localStorage.getItem("player_name");
+    if (storedName) {
+      setCurrentPlayer(storedName);
+    }
+  }, []);
+
   useEffect(() => {
    // console.log("Checking cookies on mount:");
    // console.log("All cookies:", document.cookie);
