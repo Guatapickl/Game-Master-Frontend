@@ -106,6 +106,7 @@ function App() {
             console.log("Cookies after response:", document.cookie);
             if (data.cookie && data.cookie[0] === "player_name") {
                 const newPlayerName = data.cookie[1];
+                localStorage.setItem("player_name", newPlayerName);
                 console.log("Setting new player name:", newPlayerName);
                 setCurrentPlayer(newPlayerName);
             }
