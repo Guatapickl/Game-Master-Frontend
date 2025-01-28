@@ -35,57 +35,81 @@ function App() {
   }, [messages]);
 
   const sendMessage = async () => {
-    if (!userInput.trim()) return;
+        if (!userInput.trim()) return;
 
-    const displayName = currentPlayer || "Unknown Player";
-    const newMessages = [...messages, { role: displayName, text: userInput }];
-    setMessages(newMessages);
+        const displayName = currentPlayer || "Unknown Player";
+        const newMessages = [...messages, { role: displayName, text: userInput }];
+        setMessages(newMessages);
 
-    //console.log("Sending request with credentials...");
-    //console.log("Current cookies before fetch:", document.cookie);
+        // Log the request details
+        console.log("Starting request to backend:");
+        console.log("API URL:", `${API_URL}/chat`);
+        console.log("Request payload:", {
+            message: userInput
+        });
+        console.log("Current cookies:", document.cookie);
 
-    try {
-      const response = await fetch(`${API_URL}/chat`, {
-        method: "POST",
-        credentials: 'include',
-        headers: { 
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({ 
-          message: userInput
-        }),
-      });
+        try {
+            const fetchOptions = {
+                method: "POST",
+                credentials: 'include',
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                body: JSON.stringify({ 
+                    message: userInput
+                }),
+            };
 
-      //console.log("Response headers:", [...response.headers.entries()]);
-      //console.log("Response status:", response.status);
-      //console.log("Cookies after response:", document.cookie);
+            console.log("Fetch options:", fetchOptions);
 
-      const data = await response.json();
-      //console.log("Response data:", data);
+            // Make the request
+            console.log("Sending fetch request...");
+            const response = await fetch(`${API_URL}/chat`, fetchOptions);
+            
+            console.log("Response received:");
+            console.log("Status:", response.status);
+            console.log("Status text:", response.statusText);
+            console.log("Headers:", [...response.headers.entries()]);
 
-      if (data.cookie && data.cookie[0] === "player_name") {
-        const newPlayerName = data.cookie[1];
-        //console.log("Updating player name to:", newPlayerName);
-        setCurrentPlayer(newPlayerName);
-      }
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error("Error response body:", errorText);
+                throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+            }
 
-      const botMessage = data.response || "No response";
+            const data = await response.json();
+            console.log("Parsed response data:", data);
 
-      setMessages([
-        ...newMessages,
-        { role: "Game Master", text: botMessage },
-      ]);
-    } catch (err) {
-      //console.error("Error in request:", err);
-      setMessages([
-        ...newMessages,
-        { role: "Game Master", text: "Error: unable to reach server" },
-      ]);
-    }
+            if (data.cookie && data.cookie[0] === "player_name") {
+                const newPlayerName = data.cookie[1];
+                console.log("Setting new player name:", newPlayerName);
+                setCurrentPlayer(newPlayerName);
+            }
 
-    setUserInput("");
-  };
+            const botMessage = data.response || "No response";
+            console.log("Bot message:", botMessage);
+
+            setMessages([
+                ...newMessages,
+                { role: "Game Master", text: botMessage },
+            ]);
+        } catch (err) {
+            console.error("Detailed error:", {
+                name: err.name,
+                message: err.message,
+                stack: err.stack
+            });
+
+            setMessages([
+                ...newMessages,
+                { role: "Game Master", text: `Error: ${err.message}` },
+            ]);
+        }
+
+        setUserInput("");
+    };
 
   return (
     <div style={{ maxWidth: "600px", margin: "50px auto", fontFamily: "Arial, sans-serif" }}>
