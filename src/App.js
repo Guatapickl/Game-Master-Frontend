@@ -12,7 +12,7 @@ function App() {
   const [avatarMessage, setAvatarMessage] = useState("");
 
   // check if name is known
-  const isNameKnown = currentPlayer && currentPlayer !== "No_name";
+  //const isNameKnown = currentPlayer && currentPlayer !== "No_name";
 
   useEffect(() => {
    // console.log("Checking cookies on mount:");
