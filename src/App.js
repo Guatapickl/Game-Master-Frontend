@@ -113,7 +113,7 @@ function App() {
 
   return (
     <div style={{ maxWidth: "600px", margin: "50px auto", fontFamily: "Arial, sans-serif" }}>
-      <h1>Game Master Chat</h1>
+      <h1>The Etherlink</h1>
       
       <div style={{ 
         marginBottom: "20px", 
@@ -123,7 +123,7 @@ function App() {
       }}>
         {/* Display current player or Team Chat status */}
         {currentPlayer === "Team Chat" ? (
-          <p>Currently using Team Chat interface.</p>
+          <p>Currently using Team Etherlink interface.</p>
         ) : currentPlayer ? (
           <p>Playing as: <strong>{currentPlayer}</strong>
           </p>
