@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import DIDAvatar from './DIDAvatar';  // Import the avatar component
+import DIDAvatar from './DIDAvatar';
 
 const API_URL = "https://quantumgamemaster-08115932719b.herokuapp.com";
 
 function DIDChat() {
   const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState("");
-  const [avatarMessage, setAvatarMessage] = useState("");  // For D-ID avatar speech
+  const [avatarMessage, setAvatarMessage] = useState("");
   const chatContainerRef = useRef(null);
 
   useEffect(() => {
@@ -47,12 +47,10 @@ function DIDChat() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      {/* D-ID Avatar */}
       <div style={{ backgroundColor: "#333", color: "#fff", padding: "10px", display: "flex", justifyContent: "center" }}>
         <DIDAvatar textToSpeak={avatarMessage} />
       </div>
 
-      {/* Chat Interface */}
       <div style={{ flex: 1, maxWidth: "600px", margin: "0 auto", padding: "20px" }}>
         <h1>D-ID Chat</h1>
         <div ref={chatContainerRef} style={{ border: "1px solid #ccc", padding: 10, minHeight: 300, maxHeight: "60vh", overflowY: "auto" }}>
@@ -63,7 +61,6 @@ function DIDChat() {
           ))}
         </div>
 
-        {/* Input */}
         <div style={{ marginTop: 10 }}>
           <input
             style={{ width: "80%", padding: 8, borderRadius: "4px", border: "1px solid #ccc" }}
