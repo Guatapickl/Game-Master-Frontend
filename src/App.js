@@ -19,6 +19,8 @@ function App() {
     const storedName = localStorage.getItem("player_name");
     if (storedName) {
       setCurrentPlayer(storedName);
+    } else {
+        setCurrentPlayer(null); // Ensure state resets properly
     }
   }, []);
 
@@ -108,6 +110,13 @@ function App() {
             const data = await response.json();
             console.log("Parsed response data:", data);
 
+            // Clear player name from localStorage if reset command is used
+            if (userInput.toLowerCase() === "reset game") {
+                console.log("Resetting game: Clearing player name...");
+                localStorage.removeItem("player_name"); // Remove from localStorage
+                setCurrentPlayer(null); // Reset state
+            }
+
             if (data.cookie) {
               console.log("Server requested cookie set:", data.cookie);
             }
@@ -115,9 +124,10 @@ function App() {
             console.log("Cookies after response:", document.cookie);
             if (data.cookie && data.cookie[0] === "player_name") {
                 const newPlayerName = data.cookie[1];
-                localStorage.setItem("player_name", newPlayerName);
-                console.log("Setting new player name:", newPlayerName);
-                setCurrentPlayer(newPlayerName);
+                if (newPlayerName !== currentPlayer) {  // Avoid unnecessary re-renders
+                  localStorage.setItem("player_name", newPlayerName);
+                  setCurrentPlayer(newPlayerName);
+              }
             }
 
             const botMessage = data.response || "No response";
@@ -242,7 +252,7 @@ function App() {
               placeholder="Type your message..."
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
-              onKeyPress={(e) => {
+              onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   sendMessage();
                 }
