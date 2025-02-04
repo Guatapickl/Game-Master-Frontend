@@ -35,7 +35,11 @@ function DIDChat() {
 
       const data = await response.json();
       setMessages([...newMessages, { role: "Game Master", text: data.response }]);
-      setAvatarMessage(data.response); // Send response to D-ID Avatar
+      
+      useEffect(() => {
+        console.log("Sending message to Avatar:", avatarMessage);
+      }, [avatarMessage]);
+      
 
     } catch (error) {
       console.error("Error:", error);

@@ -8,8 +8,12 @@ function DIDAvatar({ textToSpeak }) {
 
   useEffect(() => {
     const initializeStream = async () => {
+      console.log("Initializing D-ID stream...");
       const streamData = await createStream();
-      if (!streamData) return;
+      if (!streamData || !streamData.id) {
+        console.error("Failed to create D-ID stream.");
+        return;
+      }
 
       setStreamId(streamData.id);
       const pc = new RTCPeerConnection();
@@ -21,6 +25,7 @@ function DIDAvatar({ textToSpeak }) {
       };
 
       pc.ontrack = (event) => {
+        console.log("WebRTC track received:", event);
         if (videoRef.current) {
           videoRef.current.srcObject = event.streams[0];
         }
@@ -28,10 +33,14 @@ function DIDAvatar({ textToSpeak }) {
 
       const offer = await pc.createOffer();
       await pc.setLocalDescription(offer);
+      console.log("Created WebRTC offer:", offer);
 
       const response = await startWebRTCConnection(streamData.id, offer);
       if (response && response.answer) {
+        console.log("WebRTC answer received:", response.answer);
         await pc.setRemoteDescription(new RTCSessionDescription(response.answer));
+      } else {
+        console.error("WebRTC setup failed. No answer received.");
       }
 
       setPeerConnection(pc);
@@ -42,6 +51,7 @@ function DIDAvatar({ textToSpeak }) {
 
   useEffect(() => {
     if (textToSpeak && streamId) {
+      console.log("Sending text to D-ID Avatar:", textToSpeak);
       sendMessage(streamId, textToSpeak);
     }
   }, [textToSpeak, streamId]);

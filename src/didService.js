@@ -1,20 +1,14 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API_URL = 'https://api.d-id.com';
-const API_KEY = process.env.REACT_APP_DID_API_KEY; // Ensure this is in your .env file
+const API_URL = "https://quantumgamemaster-08115932719b.herokuapp.com/proxy/did";  // ✅ Use the proxy instead of D-ID directly
 
-// Create a new D-ID streaming session
+const API_KEY = btoa("cm9iZXJ0Lndhc2hrb0BnbWFpbC5jb20:ZSjinQdKYG7SxjfrwGenn"); // Replace with your actual API Key
+
+
+// Create a D-ID streaming session
 export const createStream = async () => {
   try {
-    const response = await axios.post(
-      `${API_URL}/talks/streams`,
-      {},
-      {
-        headers: {
-          Authorization: `Basic ${API_KEY}`,
-        },
-      }
-    );
+    const response = await axios.post(`${API_URL}/create`, {});  // ✅ Match proxy backend
     return response.data;
   } catch (error) {
     console.error("Error creating D-ID stream:", error);
@@ -26,13 +20,8 @@ export const createStream = async () => {
 export const startWebRTCConnection = async (streamId, offer) => {
   try {
     const response = await axios.post(
-      `${API_URL}/talks/streams/${streamId}/webrtc`,
-      { offer },
-      {
-        headers: {
-          Authorization: `Basic ${API_KEY}`,
-        },
-      }
+      `${API_URL}/webrtc/${streamId}`,
+      { offer }
     );
     return response.data;
   } catch (error) {
@@ -45,13 +34,8 @@ export const startWebRTCConnection = async (streamId, offer) => {
 export const sendMessage = async (streamId, message) => {
   try {
     await axios.post(
-      `${API_URL}/talks/streams/${streamId}/messages`,
-      { text: message },
-      {
-        headers: {
-          Authorization: `Basic ${API_KEY}`,
-        },
-      }
+      `${API_URL}/messages/${streamId}`,
+      { text: message }
     );
   } catch (error) {
     console.error("Error sending message to D-ID avatar:", error);
