@@ -22,9 +22,16 @@ function DIDAvatar({ textToSpeak }) {
 
       // ✅ Set up WebRTC PeerConnection
       const pc = new RTCPeerConnection({
-        iceServers: streamData.ice_servers || [],
+        iceServers: [
+          { urls: "stun:stun.l.google.com:19302" },
+          {
+            urls: "turn:turn.example.com:3478",
+            username: "user",
+            credential: "password"
+          }
+        ]
       });
-
+      
       pc.onicecandidate = (event) => {
         if (event.candidate) {
           console.log("🔹 ICE Candidate:", event.candidate);
@@ -49,9 +56,12 @@ function DIDAvatar({ textToSpeak }) {
         console.log("📡 Sending WebRTC answer to D-ID...");
         await fetch(`https://quantumgamemaster-08115932719b.herokuapp.com/proxy/did/webrtc/${streamData.id}`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ answer }),
+          headers: { 
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ answer: answer.sdp })  // ✅ Send the SDP answer only
         });
+        
 
         setPeerConnection(pc);
       } catch (error) {
