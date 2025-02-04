@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { createStream, startWebRTCConnection, sendMessage } from "./didService";
+import { createStream, sendMessage } from "./didService";
 
 function DIDAvatar({ textToSpeak }) {
   const videoRef = useRef(null);
