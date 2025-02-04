@@ -10,7 +10,9 @@ function DIDAvatar({ textToSpeak }) {
     const initializeStream = async () => {
       console.log("Initializing D-ID stream...");
       const streamData = await createStream();
-      console.log("D-ID Response:", streamData);
+   
+      // ✅ Log full response from D-ID
+      console.log("🟢 D-ID Full Response:", JSON.stringify(streamData, null, 2));
 
       if (!streamData || !streamData.id) {
         console.error("Failed to create D-ID stream.", streamData);
