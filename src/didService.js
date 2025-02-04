@@ -6,23 +6,31 @@ const API_KEY = btoa("cm9iZXJ0Lndhc2hrb0BnbWFpbC5jb20:ZSjinQdKYG7SxjfrwGenn"); /
 
 
 // Create a D-ID streaming session
-export const createStream = async () => {
+export const createStream = async (initialMessage = "Hello!") => {
   try {
     const response = await axios.post(`${API_URL}`, {
       script: {
         type: "text",
-        input: "Hello!",
-        provider: { type: "microsoft", voice_id: "en-US-JennyNeural" }
+        input: initialMessage,
+        provider: {
+          type: "microsoft",
+          voice_id: "JennyNeural",
+          language: "en-US"
+        }
       },
-      config: { stitch: true }
+      config: {
+        stitch: true,
+        fluent: true
+      }
     });
 
     return response.data;
   } catch (error) {
-    console.error("Error creating D-ID stream:", error);
+    console.error("Error creating D-ID stream:", error.response ? error.response.data : error.message);
     return null;
   }
 };
+
 
 // Start a WebRTC connection
 export const startWebRTCConnection = async (streamId, offer) => {
