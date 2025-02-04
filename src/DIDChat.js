@@ -6,7 +6,7 @@ const API_URL = "https://quantumgamemaster-08115932719b.herokuapp.com";
 function DIDChat() {
   const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState("");
-  const [avatarMessage, setAvatarMessage] = useState("");
+  const [avatarMessage, setAvatarMessage] = useState("");  // ✅ Keep state outside
   const chatContainerRef = useRef(null);
 
   useEffect(() => {
@@ -14,6 +14,12 @@ function DIDChat() {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
   }, [messages]);
+
+  useEffect(() => {
+    if (avatarMessage) {
+      console.log("Sending message to Avatar:", avatarMessage);
+    }
+  }, [avatarMessage]);  // ✅ Moved useEffect OUTSIDE sendMessage
 
   const sendMessage = async () => {
     if (!userInput.trim()) return;
@@ -35,11 +41,8 @@ function DIDChat() {
 
       const data = await response.json();
       setMessages([...newMessages, { role: "Game Master", text: data.response }]);
-      
-      useEffect(() => {
-        console.log("Sending message to Avatar:", avatarMessage);
-      }, [avatarMessage]);
-      
+
+      setAvatarMessage(data.response);  // ✅ Now properly updates avatarMessage
 
     } catch (error) {
       console.error("Error:", error);

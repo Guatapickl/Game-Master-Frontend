@@ -11,7 +11,7 @@ function DIDAvatar({ textToSpeak }) {
       console.log("Initializing D-ID stream...");
       const streamData = await createStream();
       if (!streamData || !streamData.id) {
-        console.error("Failed to create D-ID stream.");
+        console.error("Failed to create D-ID stream.", streamData);
         return;
       }
 

@@ -8,7 +8,7 @@ const API_KEY = btoa("cm9iZXJ0Lndhc2hrb0BnbWFpbC5jb20:ZSjinQdKYG7SxjfrwGenn"); /
 // Create a D-ID streaming session
 export const createStream = async () => {
   try {
-    const response = await axios.post(`${API_URL}/create`, {});  // ✅ Match proxy backend
+    const response = await axios.post(`${API_URL}`, {});  // ✅ Match proxy backend
     return response.data;
   } catch (error) {
     console.error("Error creating D-ID stream:", error);
