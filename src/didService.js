@@ -6,53 +6,28 @@ const API_KEY = btoa("cm9iZXJ0Lndhc2hrb0BnbWFpbC5jb20:ZSjinQdKYG7SxjfrwGenn"); /
 
 
 // Create a D-ID streaming session
-export const createStream = async (initialMessage = "Hello!") => {
+export const createStream = async () => {
   try {
     const response = await axios.post(`${API_URL}`, {
+      source_url: "https://quantumgamemaster.netlify.app/QGM.png",   // ✅ Avatar image
       script: {
         type: "text",
-        input: initialMessage,
-        provider: {
-          type: "microsoft",
-          voice_id: "JennyNeural",
-          language: "en-US"
-        }
+        input: "Initializing response...",
+        provider: { type: "microsoft", voice_id: "JennyNeural", language: "en-US" }
       },
-      config: {
-        stitch: true,
-        fluent: true
-      }
+      config: { stitch: true }
     });
 
     return response.data;
   } catch (error) {
-    console.error("Error creating D-ID stream:", error.response ? error.response.data : error.message);
+    console.error("Error creating D-ID stream:", error);
     return null;
   }
 };
 
-
-// Start a WebRTC connection
-export const startWebRTCConnection = async (streamId, offer) => {
-  try {
-    const response = await axios.post(
-      `${API_URL}/webrtc/${streamId}`,
-      { offer }
-    );
-    return response.data;
-  } catch (error) {
-    console.error("Error starting WebRTC connection:", error);
-    return null;
-  }
-};
-
-// Send a message to the avatar
 export const sendMessage = async (streamId, message) => {
   try {
-    await axios.post(
-      `${API_URL}/messages/${streamId}`,
-      { text: message }
-    );
+    await axios.post(`${API_URL}/messages/${streamId}`, { text: message });
   } catch (error) {
     console.error("Error sending message to D-ID avatar:", error);
   }
