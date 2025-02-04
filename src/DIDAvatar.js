@@ -57,10 +57,13 @@ function DIDAvatar({ textToSpeak }) {
         console.log("📡 Sending WebRTC answer to D-ID...");
         await fetch(`https://quantumgamemaster-08115932719b.herokuapp.com/proxy/did/webrtc/${streamData.id}`, {
           method: "POST",
-          headers: { 
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ answer: answer.sdp })  // ✅ Send the SDP answer only
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            answer: {
+              type: "answer",
+              sdp: answer.sdp
+            }
+          })
         });
         
 
