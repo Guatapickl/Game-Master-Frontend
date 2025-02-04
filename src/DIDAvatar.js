@@ -4,21 +4,26 @@ import { createStream, sendMessage } from "./didService";
 function DIDAvatar({ textToSpeak }) {
   const videoRef = useRef(null);
   const [streamId, setStreamId] = useState(null);
+  const [videoUrl, setVideoUrl] = useState(null); // ✅ Store video stream URL
 
   useEffect(() => {
     const initializeStream = async () => {
       console.log("Initializing D-ID stream...");
       const streamData = await createStream();
-      if (!streamData || !streamData.id || !streamData.source_url) {
+      console.log("D-ID Response:", streamData);
+
+      if (!streamData || !streamData.id) {
         console.error("Failed to create D-ID stream.", streamData);
         return;
       }
 
       setStreamId(streamData.id);
 
-      // ✅ Set the video source to the returned stream URL
-      if (videoRef.current) {
-        videoRef.current.src = streamData.source_url;
+      // ✅ If `streamData.source_url` exists, use it
+      if (streamData.source_url) {
+        setVideoUrl(streamData.source_url);
+      } else {
+        console.warn("No `source_url` provided by D-ID.");
       }
     };
 
@@ -35,7 +40,11 @@ function DIDAvatar({ textToSpeak }) {
   return (
     <div>
       <h2>AI Avatar</h2>
-      <video ref={videoRef} autoPlay playsInline style={{ width: "300px", height: "300px" }} />
+      {videoUrl ? (
+        <video src={videoUrl} autoPlay playsInline style={{ width: "300px", height: "300px" }} />
+      ) : (
+        <p>Loading avatar...</p>
+      )}
     </div>
   );
 }
