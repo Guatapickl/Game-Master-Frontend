@@ -1,16 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createStream, sendMessage } from "./didService";
 
-const API_URL = "https://quantumgamemaster-08115932719b.herokuapp.com/proxy/did";  // ✅ Use the proxy instead of D-ID directly
-//const API_URL = "https://api.d-id.com/talks/streams/{stream_id}/webrtc";
-const DID_API_KEY = "cm9iZXJ0Lndhc2hrb0BnbWFpbC5jb20:ZSjinQdKYG7SxjfrwGenn"
+const API_URL = "https://quantumgamemaster-08115932719b.herokuapp.com/proxy/did";  
+const DID_API_KEY = "cm9iZXJ0Lndhc2hrb0BnbWFpbC5jb20:ZSjinQdKYG7SxjfrwGenn";
 
 function DIDAvatar({ textToSpeak }) {
   const videoRef = useRef(null);
   const [streamId, setStreamId] = useState(null);
   const [sessionId, setSessionId] = useState(null);
   const [peerConnection, setPeerConnection] = useState(null);
-
   const mediaStream = new MediaStream();
 
   useEffect(() => {
@@ -19,123 +17,95 @@ function DIDAvatar({ textToSpeak }) {
 
       const streamData = await createStream();
       console.log("🟢 D-ID Full Response:", JSON.stringify(streamData, null, 2));
-      
 
       if (!streamData || !streamData.id || !streamData.offer) {
         console.error("❌ Failed to create D-ID stream.", streamData);
         return;
       }
 
-      const { id, offer, session_id, ice_servers } = streamData;;
-      const localStreamId = id;
-      const localSessionId = session_id;     
-      console.log("🚀 New D-ID Stream LocalID:", localStreamId);
-      console.log("🚀 New D-ID Session LocalID:", localSessionId);
+      const { id, offer, session_id, ice_servers } = streamData;
       setStreamId(id);
       setSessionId(session_id);
-      console.log("🚀 New D-ID Session ID:", session_id);
-      console.log("🚀 New D-ID Stream ID:", id);
-      
 
-      // ✅ Set up WebRTC PeerConnection
-      const pc = new RTCPeerConnection({
-        iceServers: ice_servers
-      });
+      console.log("🚀 New D-ID Stream ID:", id);
+      console.log("🚀 New D-ID Session ID:", session_id);
+
+      const pc = new RTCPeerConnection({ iceServers });
 
       pc.oniceconnectionstatechange = () => {
         console.log("🔍 ICE Connection State:", pc.iceConnectionState);
         if (pc.iceConnectionState === "connected" || pc.iceConnectionState === "completed") {
-            console.log("✅ WebRTC is now fully connected!");
+          console.log("✅ WebRTC is now fully connected!");
         }
-    };
-    
-    pc.onicecandidate = async (event) => {
-      if (!localStreamId) {  
-          console.error("❌ ICE Candidate Error: Missing streamId! Cannot send ICE candidates.");
-          return;
-      }
-      if (!localSessionId) {
-          console.error("❌ ICE Candidate Error: Missing sessionId! Cannot send ICE candidates.");
-          return;
-      }
-  
-      if (event.candidate) {
+      };
+
+      pc.onicecandidate = async (event) => {
+        if (event.candidate) {
           console.log("📡 Sending ICE Candidate:", event.candidate);
-          const { candidate, sdpMid, sdpMLineIndex } = event.candidate;
-  
           try {
-              const response = await fetch(`${API_URL}/ice/${localStreamId}`, {  
-                  method: "POST",
-                  headers: {
-                      "Authorization": `Basic ${DID_API_KEY}`,
-                      "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({
-                      candidate,
-                      sdpMid,
-                      sdpMLineIndex,
-                      session_id, 
-                  }),
-              });
-  
-              console.log("✅ ICE Candidate Sent:", await response.text());
+            const response = await fetch(`${API_URL}/ice/${id}`, {
+              method: "POST",
+              headers: {
+                "Authorization": `Basic ${DID_API_KEY}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                candidate: event.candidate.candidate,
+                sdpMid: event.candidate.sdpMid,
+                sdpMLineIndex: event.candidate.sdpMLineIndex,
+                session_id,
+              }),
+            });
+
+            console.log("✅ ICE Candidate Sent:", await response.text());
           } catch (err) {
-              console.error("❌ Failed to send ICE candidate:", err);
+            console.error("❌ Failed to send ICE candidate:", err);
           }
-      }
-  };
-  
-  
-    
+        }
+      };
 
-  pc.ontrack = (event) => {
-    for (const track of event.streams[0].getTracks()) {
-      mediaStream.addTrack(track);  // add each new track into one combined stream
-    }
-  
-    // If we haven't yet attached .srcObject, do it once
-    if (!videoRef.current.srcObject) {
-      videoRef.current.srcObject = mediaStream;
-      videoRef.current.play().catch(err => console.error("❌ Video play error:", err));
-    }
-  };
-  
+      pc.ontrack = (event) => {
+        console.log("🎥 Received 'ontrack' event!");
+        console.log(`🔍 Number of streams: ${event.streams.length}`);
 
-    
+        event.streams.forEach((stream, index) => {
+          console.log(`📡 Stream ${index} ID: ${stream.id}`);
+          stream.getTracks().forEach((track, trackIndex) => {
+            console.log(`🎬 Track ${trackIndex} - ID: ${track.id}, Kind: ${track.kind}`);
+            mediaStream.addTrack(track);
+          });
+        });
 
-    
+        if (!videoRef.current.srcObject) {
+          console.log("📡 Setting video source object...");
+          videoRef.current.srcObject = mediaStream;
+          videoRef.current
+            .play()
+            .then(() => console.log("🎥 Video playback started successfully"))
+            .catch((err) => console.error("❌ Video play error:", err));
+        }
+      };
 
       try {
         await pc.setRemoteDescription(new RTCSessionDescription(offer));
         const answer = await pc.createAnswer();
         await pc.setLocalDescription(answer);
 
-        console.log("📡 Sending WebRTC answer for Stream ID:", streamData.id);
-        console.log("➡️ WebRTC Answer Payload:", { type: "answer", sdp: answer.sdp });
-        console.log("🔍 Sending WebRTC answer with API Key:", DID_API_KEY ? "✅ Exists" : "❌ MISSING");
-        console.log("🔍 WebRTC Payload Before Sending:", JSON.stringify({
-          answer: { type: "answer", sdp: answer.sdp }
-        }, null, 2));
-        
-        const sdpResponse = await fetch(
-          `${API_URL}/sdp/${streamData.id}`,   // Instead of /webrtc
-          {
-            method: "POST",
-            headers: {
-              "Authorization": `Basic ${DID_API_KEY}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              answer: { type: "answer", sdp: answer.sdp },
-              session_id  
-            }),
-          }
-        );
-        
-        
+        console.log("📡 Sending WebRTC answer for Stream ID:", id);
+        const sdpResponse = await fetch(`${API_URL}/sdp/${id}`, {
+          method: "POST",
+          headers: {
+            "Authorization": `Basic ${DID_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            answer: { type: "answer", sdp: answer.sdp },
+            session_id,
+          }),
+        });
+
         console.log("🔍 WebRTC Answer Response Status:", sdpResponse.status);
         console.log("🔍 WebRTC Answer Response Text:", await sdpResponse.text());
-        
 
         setPeerConnection(pc);
       } catch (error) {
@@ -148,32 +118,28 @@ function DIDAvatar({ textToSpeak }) {
 
   useEffect(() => {
     if (textToSpeak && streamId) {
-        console.log("💬 Sending text to D-ID Avatar:", textToSpeak);
-        sendMessage(streamId, textToSpeak, sessionId);
-        console.log("📡 Sending message to D-ID:", { streamId, sessionId, textToSpeak });
+      console.log("💬 Sending text to D-ID Avatar:", textToSpeak);
+      sendMessage(streamId, textToSpeak, sessionId);
     }
   }, [textToSpeak, streamId, sessionId]);
 
-  
   return (
     <div>
-        <h2>AI Avatary</h2>
-        <video 
-            ref={videoRef} 
-            autoPlay 
-            playsInline 
-            muted  // 🔥 Adding this ensures autoplay isn't blocked!
-            style={{ 
-                width: "300px", 
-                height: "300px", 
-                backgroundColor: "white",  // Ensures visibility
-                display: "block"  // Forces video to be rendered
-            }} 
-        />
+      <h2>AI Avatar</h2>
+      <video
+        ref={videoRef}
+        autoPlay
+        playsInline
+        muted
+        style={{
+          width: "300px",
+          height: "300px",
+          backgroundColor: "white",
+          display: "block",
+        }}
+      />
     </div>
-);
-
+  );
 }
 
 export default DIDAvatar;
-
