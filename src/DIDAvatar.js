@@ -10,9 +10,7 @@ function DIDAvatar({ textToSpeak }) {
   const [sessionId, setSessionId] = useState(null);
   const [peerConnection, setPeerConnection] = useState(null);
   const mediaStream = new MediaStream();
-  const sanitizedSessionId = session_id.split(";")[0]; // Take only the first part before ';'
-
-
+ 
   useEffect(() => {
     const initializeStream = async () => {
       console.log("🔍 Initializing D-ID WebRTC stream...");
