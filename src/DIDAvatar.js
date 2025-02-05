@@ -27,6 +27,7 @@ function DIDAvatar({ textToSpeak }) {
       const { id, offer, session_id } = streamData;
       setStreamId(id);
       setSessionId(session_id);
+      const localStreamId = id;
       console.log("🚀 New D-ID Session ID:", session_id);
 
       // ✅ Set up WebRTC PeerConnection
@@ -41,37 +42,42 @@ function DIDAvatar({ textToSpeak }) {
         }
     };
     
-      pc.onicecandidate = async (event) => {
-        if (!streamId) {
-            console.error("❌ ICE Candidate Error: Missing streamId! Cannot send ICE candidates.");
-            return;
-        }
-    
-        if (event.candidate) {
-            console.log("📡 Sending ICE Candidate:", event.candidate);
-            const { candidate, sdpMid, sdpMLineIndex } = event.candidate;
-    
-            try {
-                const response = await fetch(`${API_URL}/${streamId}/ice`, {
-                    method: "POST",
-                    headers: {
-                        "Authorization": `Basic ${DID_API_KEY}`,
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        candidate,
-                        sdpMid,
-                        sdpMLineIndex,
-                        session_id, // Must include session_id
-                    }),
-                });
-    
-                console.log("✅ ICE Candidate Sent:", await response.text());
-            } catch (err) {
-                console.error("❌ Failed to send ICE candidate:", err);
-            }
-        }
-    };
+    pc.onicecandidate = async (event) => {
+      if (!localStreamId) {  
+          console.error("❌ ICE Candidate Error: Missing streamId! Cannot send ICE candidates.");
+          return;
+      }
+      if (!sessionId) {
+          console.error("❌ ICE Candidate Error: Missing sessionId! Cannot send ICE candidates.");
+          return;
+      }
+  
+      if (event.candidate) {
+          console.log("📡 Sending ICE Candidate:", event.candidate);
+          const { candidate, sdpMid, sdpMLineIndex } = event.candidate;
+  
+          try {
+              const response = await fetch(`${API_URL}/ice/${localStreamId}`, {  
+                  method: "POST",
+                  headers: {
+                      "Authorization": `Basic ${DID_API_KEY}`,
+                      "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                      candidate,
+                      sdpMid,
+                      sdpMLineIndex,
+                      session_id, 
+                  }),
+              });
+  
+              console.log("✅ ICE Candidate Sent:", await response.text());
+          } catch (err) {
+              console.error("❌ Failed to send ICE candidate:", err);
+          }
+      }
+  };
+  
     
 
       pc.ontrack = (event) => {
