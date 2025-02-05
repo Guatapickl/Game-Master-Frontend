@@ -28,7 +28,7 @@ function DIDAvatar({ textToSpeak }) {
       const { id, offer, session_id, ice_servers } = streamData;
       setStreamId(id);
       setSessionId(session_id);
-
+      const sanitizedSessionId = session_id.split(";")[0]; // Take only the first part before ';'
       console.log("🚀 New D-ID Stream ID:", id);
       console.log("🚀 New D-ID Session ID:", session_id);
 
