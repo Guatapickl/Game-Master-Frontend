@@ -22,21 +22,8 @@ function DIDAvatar({ textToSpeak }) {
 
       // ✅ Set up WebRTC PeerConnection
       const pc = new RTCPeerConnection({
-        iceServers: [
-          { urls: "stun:stun.l.google.com:19302" },
-          {
-            urls: "turn:turn.example.com:3478",
-            username: "user",
-            credential: "password"
-          }
-        ]
+        iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
       });
-      
-      pc.onicecandidate = (event) => {
-        if (event.candidate) {
-          console.log("🔹 ICE Candidate:", event.candidate);
-        }
-      };
 
       pc.ontrack = (event) => {
         console.log("🎥 WebRTC track received:", event);
@@ -46,26 +33,16 @@ function DIDAvatar({ textToSpeak }) {
       };
 
       try {
-        // ✅ Set the remote offer from D-ID
         await pc.setRemoteDescription(new RTCSessionDescription(streamData.offer));
-
-        // ✅ Create and send an answer
         const answer = await pc.createAnswer();
         await pc.setLocalDescription(answer);
-        console.log("📡 Sending WebRTC answer:", JSON.stringify(answer, null, 2));
+
         console.log("📡 Sending WebRTC answer for Stream ID:", streamData.id);
-        console.log("📡 Sending WebRTC answer to D-ID...");
-        await fetch(`https://quantumgamemaster-08115932719b.herokuapp.com/proxy/did/webrtc/${streamData.id}`, {
+        await fetch(`${API_URL}/webrtc/${streamData.id}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            answer: {
-              type: "answer",
-              sdp: answer.sdp
-            }
-          })
+          body: JSON.stringify({ answer: { type: "answer", sdp: answer.sdp } })
         });
-        
 
         setPeerConnection(pc);
       } catch (error) {
@@ -92,3 +69,4 @@ function DIDAvatar({ textToSpeak }) {
 }
 
 export default DIDAvatar;
+
