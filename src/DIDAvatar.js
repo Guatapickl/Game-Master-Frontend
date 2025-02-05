@@ -59,16 +59,19 @@ function DIDAvatar({ textToSpeak }) {
         if (videoRef.current && event.streams.length > 0) {
             console.log("🎥 Attaching stream to video element");
             videoRef.current.srcObject = event.streams[0];
-      
-            // Explicitly play the video
+    
+            // Force video to play
             videoRef.current.onloadedmetadata = () => {
                 console.log("🎬 Attempting to play video...");
-                videoRef.current.play().catch(err => console.error("❌ Video play error:", err));
+                videoRef.current.play()
+                    .then(() => console.log("✅ Video playback started!"))
+                    .catch(err => console.error("❌ Video play error:", err));
             };
         } else {
             console.error("❌ No valid stream received.");
         }
-      };
+    };
+    
 
       try {
         await pc.setRemoteDescription(new RTCSessionDescription(offer));
