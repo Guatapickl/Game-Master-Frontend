@@ -11,6 +11,8 @@ function DIDAvatar({ textToSpeak }) {
   const [sessionId, setSessionId] = useState(null);
   const [peerConnection, setPeerConnection] = useState(null);
 
+  const mediaStream = new MediaStream();
+
   useEffect(() => {
     const initializeStream = async () => {
       console.log("🔍 Initializing D-ID WebRTC stream...");
@@ -86,24 +88,18 @@ function DIDAvatar({ textToSpeak }) {
   
     
 
-  pc.ontrack = async (event) => {
-    console.log("🎥 WebRTC track received:", event);
-
-    if (videoRef.current) {
-        console.log("🎥 Attaching stream to video element");
-        videoRef.current.srcObject = event.streams[0];
-
-        // ✅ Force immediate playback attempt
-        try {
-            await videoRef.current.play();
-            console.log("✅ Video playback started!");
-        } catch (err) {
-            console.error("❌ Video play error:", err);
-        }
-    } else {
-        console.error("❌ Video element not found!");
+  pc.ontrack = (event) => {
+    for (const track of event.streams[0].getTracks()) {
+      mediaStream.addTrack(track);  // add each new track into one combined stream
     }
-};
+  
+    // If we haven't yet attached .srcObject, do it once
+    if (!videoRef.current.srcObject) {
+      videoRef.current.srcObject = mediaStream;
+      videoRef.current.play().catch(err => console.error("❌ Video play error:", err));
+    }
+  };
+  
 
     
 
