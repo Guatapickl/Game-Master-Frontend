@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createStream, sendMessage } from "./didService";
 
-const API_URL = "https://quantumgamemaster-08115932719b.herokuapp.com/proxy/did";  // ✅ Use the proxy instead of D-ID directly
+//const API_URL = "https://quantumgamemaster-08115932719b.herokuapp.com/proxy/did";  // ✅ Use the proxy instead of D-ID directly
+const API_URL = "https://api.d-id.com/talks/streams/{stream_id}/webrtc";
 const DID_API_KEY = "cm9iZXJ0Lndhc2hrb0BnbWFpbC5jb20:ZSjinQdKYG7SxjfrwGenn"
 
 function DIDAvatar({ textToSpeak }) {
