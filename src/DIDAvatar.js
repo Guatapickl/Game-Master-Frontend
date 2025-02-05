@@ -52,7 +52,7 @@ function DIDAvatar({ textToSpeak }) {
       //      }),
       //    });
       //  }
-      //};
+      //}
 
       pc.ontrack = (event) => {
         console.log("🎥 WebRTC track received:", event);
@@ -106,6 +106,11 @@ function DIDAvatar({ textToSpeak }) {
     if (textToSpeak && streamId) {
       console.log("💬 Sending text to D-ID Avatar:", textToSpeak);
       sendMessage(streamId, textToSpeak, sessionId);
+      console.log("📡 Sending message to D-ID!!!: ", {
+        streamId,
+        sessionId,
+        textToSpeak
+      });
     }
   }, [textToSpeak, streamId, sessionId]);
 
