@@ -193,8 +193,7 @@ function App() {
           display: "flex",
           justifyContent: "center",
         }}>
-        {/* Commenting out the DIDAvatar component for now: */}
-        {/* <DIDAvatar textToSpeak={avatarMessage} /> */}
+        {<DIDAvatar textToSpeak={avatarMessage} />}
         </div>
   
         {/* MIDDLE SECTION: Chat Area */}
