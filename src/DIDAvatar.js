@@ -43,7 +43,10 @@ function DIDAvatar({ textToSpeak }) {
         console.log("📡 Sending WebRTC answer for Stream ID:", streamData.id);
         console.log("➡️ WebRTC Answer Payload:", { type: "answer", sdp: answer.sdp });
         console.log("🔍 Sending WebRTC answer with API Key:", DID_API_KEY ? "✅ Exists" : "❌ MISSING");
-
+        console.log("🔍 WebRTC Payload Before Sending:", JSON.stringify({
+          answer: { type: "answer", sdp: answer.sdp }
+        }, null, 2));
+        
         const response = await fetch(`${API_URL}/webrtc/${streamData.id}`, {
           method: "POST",
           credentials: "include",
