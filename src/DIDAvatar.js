@@ -53,7 +53,7 @@ function DIDAvatar({ textToSpeak }) {
         const answer = await pc.createAnswer();
         await pc.setLocalDescription(answer);
         console.log("📡 Sending WebRTC answer:", JSON.stringify(answer, null, 2));
-
+        console.log("📡 Sending WebRTC answer for Stream ID:", streamData.id);
         console.log("📡 Sending WebRTC answer to D-ID...");
         await fetch(`https://quantumgamemaster-08115932719b.herokuapp.com/proxy/did/webrtc/${streamData.id}`, {
           method: "POST",
