@@ -10,6 +10,8 @@ function DIDAvatar({ textToSpeak }) {
   const [sessionId, setSessionId] = useState(null);
   const [peerConnection, setPeerConnection] = useState(null);
   const mediaStream = new MediaStream();
+  const sanitizedSessionId = session_id.split(";")[0]; // Take only the first part before ';'
+
 
   useEffect(() => {
     const initializeStream = async () => {
@@ -33,15 +35,15 @@ function DIDAvatar({ textToSpeak }) {
       const pc = new RTCPeerConnection({ iceServers: ice_servers });
 
       pc.oniceconnectionstatechange = () => {
-        console.log("🔍 ICE Connection State:", pc.iceConnectionState);
+        //console.log("🔍 ICE Connection State:", pc.iceConnectionState);
         if (pc.iceConnectionState === "connected" || pc.iceConnectionState === "completed") {
-          console.log("✅ WebRTC is now fully connected!");
+          //console.log("✅ WebRTC is now fully connected!");
         }
       };
 
       pc.onicecandidate = async (event) => {
         if (event.candidate) {
-          console.log("📡 Sending ICE Candidate:", event.candidate);
+          //console.log("📡 Sending ICE Candidate:", event.candidate);
           try {
             const response = await fetch(`${API_URL}/ice/${id}`, {
               method: "POST",
@@ -53,13 +55,13 @@ function DIDAvatar({ textToSpeak }) {
                 candidate: event.candidate.candidate,
                 sdpMid: event.candidate.sdpMid,
                 sdpMLineIndex: event.candidate.sdpMLineIndex,
-                session_id,
+                sanitizedSessionId,
               }),
             });
 
-            console.log("✅ ICE Candidate Sent:", await response.text());
+            //console.log("✅ ICE Candidate Sent:", await response.text());
           } catch (err) {
-            console.error("❌ Failed to send ICE candidate:", err);
+            //console.error("❌ Failed to send ICE candidate:", err);
           }
         }
       };
@@ -67,24 +69,32 @@ function DIDAvatar({ textToSpeak }) {
       pc.ontrack = (event) => {
         console.log("🎥 Received 'ontrack' event!");
         console.log(`🔍 Number of streams: ${event.streams.length}`);
-
+    
         event.streams.forEach((stream, index) => {
-          console.log(`📡 Stream ${index} ID: ${stream.id}`);
-          stream.getTracks().forEach((track, trackIndex) => {
-            console.log(`🎬 Track ${trackIndex} - ID: ${track.id}, Kind: ${track.kind}`);
-            mediaStream.addTrack(track);
-          });
+            console.log(`📡 Stream ${index} ID: ${stream.id}`);
+            stream.getTracks().forEach((track, trackIndex) => {
+                console.log(`🎬 Track ${trackIndex} - ID: ${track.id}, Kind: ${track.kind}`);
+                mediaStream.addTrack(track);
+            });
         });
-
-        if (!videoRef.current.srcObject) {
-          console.log("📡 Setting video source object...");
-          videoRef.current.srcObject = mediaStream;
-          videoRef.current
-            .play()
-            .then(() => console.log("🎥 Video playback started successfully"))
-            .catch((err) => console.error("❌ Video play error:", err));
+    
+        // Ensure the video element gets the correct media stream
+        if (videoRef.current) {
+            if (!videoRef.current.srcObject || videoRef.current.srcObject !== mediaStream) {
+                console.log("📡 Setting video source object...");
+                videoRef.current.srcObject = mediaStream;
+                videoRef.current
+                    .play()
+                    .then(() => console.log("🎥 Video playback started successfully"))
+                    .catch((err) => console.error("❌ Video play error:", err));
+            } else {
+                console.log("✅ Video element already has the correct media stream.");
+            }
+        } else {
+            console.error("❌ Video reference is null!");
         }
-      };
+    };
+    
 
       try {
         await pc.setRemoteDescription(new RTCSessionDescription(offer));
@@ -119,9 +129,9 @@ function DIDAvatar({ textToSpeak }) {
   useEffect(() => {
     if (textToSpeak && streamId) {
       console.log("💬 Sending text to D-ID Avatar:", textToSpeak);
-      sendMessage(streamId, textToSpeak, sessionId);
+      sendMessage(streamId, textToSpeak, sanitizedSessionId);
     }
-  }, [textToSpeak, streamId, sessionId]);
+  }, [textToSpeak, streamId, sanitizedSessionId]);
 
   return (
     <div>
