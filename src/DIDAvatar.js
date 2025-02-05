@@ -34,13 +34,25 @@ function DIDAvatar({ textToSpeak }) {
         iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
       });
 
+      pc.oniceconnectionstatechange = () => {
+        console.log("🔍 ICE Connection State:", pc.iceConnectionState);
+        if (pc.iceConnectionState === "connected" || pc.iceConnectionState === "completed") {
+            console.log("✅ WebRTC is now fully connected!");
+        }
+    };
+    
       pc.onicecandidate = async (event) => {
+        if (!streamId) {
+            console.error("❌ ICE Candidate Error: Missing streamId! Cannot send ICE candidates.");
+            return;
+        }
+    
         if (event.candidate) {
             console.log("📡 Sending ICE Candidate:", event.candidate);
             const { candidate, sdpMid, sdpMLineIndex } = event.candidate;
     
             try {
-                const response = await fetch(`${API_URL}/ice/${streamId}`, {
+                const response = await fetch(`${API_URL}/${streamId}/ice`, {
                     method: "POST",
                     headers: {
                         "Authorization": `Basic ${DID_API_KEY}`,
