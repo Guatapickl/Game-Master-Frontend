@@ -8,9 +8,10 @@ function DIDAvatar({ textToSpeak }) {
   const videoRef = useRef(null);
   const [streamId, setStreamId] = useState(null);
   const [sessionId, setSessionId] = useState(null);
+  const [sanitizedSessionId, setSanitizedSessionId] = useState(null);
   const [peerConnection, setPeerConnection] = useState(null);
   const mediaStream = new MediaStream();
- 
+
   useEffect(() => {
     const initializeStream = async () => {
       console.log("🔍 Initializing D-ID WebRTC stream...");
@@ -26,22 +27,24 @@ function DIDAvatar({ textToSpeak }) {
       const { id, offer, session_id, ice_servers } = streamData;
       setStreamId(id);
       setSessionId(session_id);
-      const sanitizedSessionId = session_id.split(";")[0]; // Take only the first part before ';'
+
+      // Sanitize session ID
+      const cleanSessionId = session_id.split(";")[0]; 
+      setSanitizedSessionId(cleanSessionId);
+
       console.log("🚀 New D-ID Stream ID:", id);
-      console.log("🚀 New D-ID Session ID:", session_id);
+      console.log("🚀 New D-ID Session ID:", cleanSessionId);
 
       const pc = new RTCPeerConnection({ iceServers: ice_servers });
 
       pc.oniceconnectionstatechange = () => {
-        //console.log("🔍 ICE Connection State:", pc.iceConnectionState);
         if (pc.iceConnectionState === "connected" || pc.iceConnectionState === "completed") {
-          //console.log("✅ WebRTC is now fully connected!");
+          console.log("✅ WebRTC is now fully connected!");
         }
       };
 
       pc.onicecandidate = async (event) => {
         if (event.candidate) {
-          //console.log("📡 Sending ICE Candidate:", event.candidate);
           try {
             const response = await fetch(`${API_URL}/ice/${id}`, {
               method: "POST",
@@ -53,13 +56,13 @@ function DIDAvatar({ textToSpeak }) {
                 candidate: event.candidate.candidate,
                 sdpMid: event.candidate.sdpMid,
                 sdpMLineIndex: event.candidate.sdpMLineIndex,
-                sanitizedSessionId,
+                session_id: cleanSessionId, // ✅ Use the sanitized version
               }),
             });
 
-            //console.log("✅ ICE Candidate Sent:", await response.text());
+            console.log("✅ ICE Candidate Sent:", await response.text());
           } catch (err) {
-            //console.error("❌ Failed to send ICE candidate:", err);
+            console.error("❌ Failed to send ICE candidate:", err);
           }
         }
       };
@@ -67,32 +70,30 @@ function DIDAvatar({ textToSpeak }) {
       pc.ontrack = (event) => {
         console.log("🎥 Received 'ontrack' event!");
         console.log(`🔍 Number of streams: ${event.streams.length}`);
-    
+
         event.streams.forEach((stream, index) => {
-            console.log(`📡 Stream ${index} ID: ${stream.id}`);
-            stream.getTracks().forEach((track, trackIndex) => {
-                console.log(`🎬 Track ${trackIndex} - ID: ${track.id}, Kind: ${track.kind}`);
-                mediaStream.addTrack(track);
-            });
+          console.log(`📡 Stream ${index} ID: ${stream.id}`);
+          stream.getTracks().forEach((track, trackIndex) => {
+            console.log(`🎬 Track ${trackIndex} - ID: ${track.id}, Kind: ${track.kind}`);
+            mediaStream.addTrack(track);
+          });
         });
-    
-        // Ensure the video element gets the correct media stream
+
         if (videoRef.current) {
-            if (!videoRef.current.srcObject || videoRef.current.srcObject !== mediaStream) {
-                console.log("📡 Setting video source object...");
-                videoRef.current.srcObject = mediaStream;
-                videoRef.current
-                    .play()
-                    .then(() => console.log("🎥 Video playback started successfully"))
-                    .catch((err) => console.error("❌ Video play error:", err));
-            } else {
-                console.log("✅ Video element already has the correct media stream.");
-            }
+          if (!videoRef.current.srcObject || videoRef.current.srcObject !== mediaStream) {
+            console.log("📡 Setting video source object...");
+            videoRef.current.srcObject = mediaStream;
+            videoRef.current
+              .play()
+              .then(() => console.log("🎥 Video playback started successfully"))
+              .catch((err) => console.error("❌ Video play error:", err));
+          } else {
+            console.log("✅ Video element already has the correct media stream.");
+          }
         } else {
-            console.error("❌ Video reference is null!");
+          console.error("❌ Video reference is null!");
         }
-    };
-    
+      };
 
       try {
         await pc.setRemoteDescription(new RTCSessionDescription(offer));
@@ -108,7 +109,7 @@ function DIDAvatar({ textToSpeak }) {
           },
           body: JSON.stringify({
             answer: { type: "answer", sdp: answer.sdp },
-            session_id,
+            session_id: cleanSessionId, // ✅ Use sanitized version
           }),
         });
 
@@ -125,11 +126,11 @@ function DIDAvatar({ textToSpeak }) {
   }, []);
 
   useEffect(() => {
-    if (textToSpeak && streamId) {
+    if (textToSpeak && streamId && sanitizedSessionId) {
       console.log("💬 Sending text to D-ID Avatar:", textToSpeak);
       sendMessage(streamId, textToSpeak, sanitizedSessionId);
     }
-  }, [textToSpeak, streamId, sanitizedSessionId]);
+  }, [textToSpeak, streamId, sanitizedSessionId]); // ✅ Ensure sanitizedSessionId is in dependency array
 
   return (
     <div>
