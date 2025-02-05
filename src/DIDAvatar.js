@@ -34,25 +34,33 @@ function DIDAvatar({ textToSpeak }) {
         iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
       });
 
-      // For passing ICE candidates back:
-      //pc.onicecandidate = async (event) => {
-      //  if (event.candidate) {
-      //    const { candidate, sdpMid, sdpMLineIndex } = event.candidate;
-      //    await fetch(`${API_URL}/ice/${id}`, {
-      //      method: "POST",
-      //      headers: {
-      //        "Authorization": `Basic ${DID_API_KEY}`,
-      //        "Content-Type": "application/json",
-      //      },
-      //      body: JSON.stringify({
-      //        candidate,
-      //        sdpMid,
-      //        sdpMLineIndex,
-      //        session_id, // must include session_id
-      //      }),
-      //    });
-      //  }
-      //}
+      pc.onicecandidate = async (event) => {
+        if (event.candidate) {
+            console.log("📡 Sending ICE Candidate:", event.candidate);
+            const { candidate, sdpMid, sdpMLineIndex } = event.candidate;
+    
+            try {
+                const response = await fetch(`${API_URL}/ice/${streamId}`, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Basic ${DID_API_KEY}`,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        candidate,
+                        sdpMid,
+                        sdpMLineIndex,
+                        session_id, // Must include session_id
+                    }),
+                });
+    
+                console.log("✅ ICE Candidate Sent:", await response.text());
+            } catch (err) {
+                console.error("❌ Failed to send ICE candidate:", err);
+            }
+        }
+    };
+    
 
       pc.ontrack = (event) => {
         console.log("🎥 WebRTC track received:", event);
