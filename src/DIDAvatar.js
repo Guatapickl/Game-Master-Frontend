@@ -35,24 +35,24 @@ function DIDAvatar({ textToSpeak }) {
       });
 
       // For passing ICE candidates back:
-      pc.onicecandidate = async (event) => {
-        if (event.candidate) {
-          const { candidate, sdpMid, sdpMLineIndex } = event.candidate;
-          await fetch(`${API_URL}/ice/${id}`, {
-            method: "POST",
-            headers: {
-              "Authorization": `Basic ${DID_API_KEY}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              candidate,
-              sdpMid,
-              sdpMLineIndex,
-              session_id, // must include session_id
-            }),
-          });
-        }
-      };
+      //pc.onicecandidate = async (event) => {
+      //  if (event.candidate) {
+      //    const { candidate, sdpMid, sdpMLineIndex } = event.candidate;
+      //    await fetch(`${API_URL}/ice/${id}`, {
+      //      method: "POST",
+      //      headers: {
+      //        "Authorization": `Basic ${DID_API_KEY}`,
+      //        "Content-Type": "application/json",
+      //      },
+      //      body: JSON.stringify({
+      //        candidate,
+      //        sdpMid,
+      //        sdpMLineIndex,
+      //        session_id, // must include session_id
+      //      }),
+      //    });
+      //  }
+      //};
 
       pc.ontrack = (event) => {
         console.log("🎥 WebRTC track received:", event);
