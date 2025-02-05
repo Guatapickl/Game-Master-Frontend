@@ -30,7 +30,7 @@ function DIDAvatar({ textToSpeak }) {
       console.log("🚀 New D-ID Stream ID:", id);
       console.log("🚀 New D-ID Session ID:", session_id);
 
-      const pc = new RTCPeerConnection({ iceServers });
+      const pc = new RTCPeerConnection({ iceServers: ice_servers });
 
       pc.oniceconnectionstatechange = () => {
         console.log("🔍 ICE Connection State:", pc.iceConnectionState);
