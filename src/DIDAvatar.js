@@ -56,11 +56,19 @@ function DIDAvatar({ textToSpeak }) {
 
       pc.ontrack = (event) => {
         console.log("🎥 WebRTC track received:", event);
-        if (videoRef.current && event.streams.length > 0) {
+    
+        // Check if the stream contains a video track
+        const hasVideoTrack = event.streams[0]?.getVideoTracks().length > 0;
+        if (!hasVideoTrack) {
+            console.error("❌ No video track found in the stream!");
+            return;
+        }
+    
+        if (videoRef.current) {
             console.log("🎥 Attaching stream to video element");
             videoRef.current.srcObject = event.streams[0];
     
-            // Force video to play
+            // Force video playback
             videoRef.current.onloadedmetadata = () => {
                 console.log("🎬 Attempting to play video...");
                 videoRef.current.play()
@@ -68,9 +76,11 @@ function DIDAvatar({ textToSpeak }) {
                     .catch(err => console.error("❌ Video play error:", err));
             };
         } else {
-            console.error("❌ No valid stream received.");
+            console.error("❌ Video element not found!");
         }
     };
+    
+
     
 
       try {
@@ -128,7 +138,7 @@ function DIDAvatar({ textToSpeak }) {
 
   return (
     <div>
-        <h2>AI Avatar</h2>
+        <h2>AI Avatary</h2>
         <video 
             ref={videoRef} 
             autoPlay 
