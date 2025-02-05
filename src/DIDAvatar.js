@@ -41,14 +41,21 @@ function DIDAvatar({ textToSpeak }) {
         await pc.setLocalDescription(answer);
 
         console.log("📡 Sending WebRTC answer for Stream ID:", streamData.id);
-        await fetch(`${API_URL}/webrtc/${streamData.id}`, {
+        console.log("➡️ WebRTC Answer Payload:", { type: "answer", sdp: answer.sdp });
+        console.log("🔍 Sending WebRTC answer with API Key:", DID_API_KEY ? "✅ Exists" : "❌ MISSING");
+
+        const response = await fetch(`${API_URL}/webrtc/${streamData.id}`, {
           method: "POST",
+          credentials: "include",
           headers: { 
             "Authorization": `Basic ${DID_API_KEY}`,
-            "Content-Type": "application/json" 
+            "Content-Type": "application/json"
           },
           body: JSON.stringify({ answer: { type: "answer", sdp: answer.sdp } })
         });
+        
+        console.log("🔍 WebRTC Answer Response Status:", response.status);
+        console.log("🔍 WebRTC Answer Response Text:", await response.text());
 
         setPeerConnection(pc);
       } catch (error) {
