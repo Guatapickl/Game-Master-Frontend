@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createStream, sendMessage } from "./didService";
 
+const API_URL = "https://quantumgamemaster-08115932719b.herokuapp.com/proxy/did";  // ✅ Use the proxy instead of D-ID directly
+
 function DIDAvatar({ textToSpeak }) {
   const videoRef = useRef(null);
   const [streamId, setStreamId] = useState(null);
