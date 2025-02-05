@@ -83,33 +83,28 @@ function DIDAvatar({ textToSpeak }) {
       }
   };
   
+  
     
 
-      pc.ontrack = (event) => {
-        console.log("🎥 WebRTC track received:", event);
-    
-        // Check if the stream contains a video track
-        const hasVideoTrack = event.streams[0]?.getVideoTracks().length > 0;
-        if (!hasVideoTrack) {
-            console.error("❌ No video track found in the stream!");
-            return;
+  pc.ontrack = async (event) => {
+    console.log("🎥 WebRTC track received:", event);
+
+    if (videoRef.current) {
+        console.log("🎥 Attaching stream to video element");
+        videoRef.current.srcObject = event.streams[0];
+
+        // ✅ Force immediate playback attempt
+        try {
+            await videoRef.current.play();
+            console.log("✅ Video playback started!");
+        } catch (err) {
+            console.error("❌ Video play error:", err);
         }
-    
-        if (videoRef.current) {
-            console.log("🎥 Attaching stream to video element");
-            videoRef.current.srcObject = event.streams[0];
-    
-            // Force video playback
-            videoRef.current.onloadedmetadata = () => {
-                console.log("🎬 Attempting to play video...");
-                videoRef.current.play()
-                    .then(() => console.log("✅ Video playback started!"))
-                    .catch(err => console.error("❌ Video play error:", err));
-            };
-        } else {
-            console.error("❌ Video element not found!");
-        }
-    };
+    } else {
+        console.error("❌ Video element not found!");
+    }
+};
+
     
 
     
@@ -157,16 +152,13 @@ function DIDAvatar({ textToSpeak }) {
 
   useEffect(() => {
     if (textToSpeak && streamId) {
-      console.log("💬 Sending text to D-ID Avatar:", textToSpeak);
-      sendMessage(streamId, textToSpeak, sessionId);
-      console.log("📡 Sending message to D-ID!!!: ", {
-        streamId,
-        sessionId,
-        textToSpeak
-      });
+        console.log("💬 Sending text to D-ID Avatar:", textToSpeak);
+        sendMessage(streamId, textToSpeak, sessionId);
+        console.log("📡 Sending message to D-ID:", { streamId, sessionId, textToSpeak });
     }
   }, [textToSpeak, streamId, sessionId]);
 
+  
   return (
     <div>
         <h2>AI Avatary</h2>
