@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { createStream, sendMessage } from "./didService";
 
 const API_URL = "https://quantumgamemaster-08115932719b.herokuapp.com/proxy/did";  // ✅ Use the proxy instead of D-ID directly
+const DID_API_KEY = "cm9iZXJ0Lndhc2hrb0BnbWFpbC5jb20:ZSjinQdKYG7SxjfrwGenn"
 
 function DIDAvatar({ textToSpeak }) {
   const videoRef = useRef(null);
@@ -42,7 +43,10 @@ function DIDAvatar({ textToSpeak }) {
         console.log("📡 Sending WebRTC answer for Stream ID:", streamData.id);
         await fetch(`${API_URL}/webrtc/${streamData.id}`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Authorization": `Basic ${DID_API_KEY}`,
+            "Content-Type": "application/json" 
+          },
           body: JSON.stringify({ answer: { type: "answer", sdp: answer.sdp } })
         });
 
