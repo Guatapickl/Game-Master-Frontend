@@ -24,15 +24,20 @@ function DIDAvatar({ textToSpeak }) {
         return;
       }
 
-      const { id, offer, session_id } = streamData;
+      const { id, offer, session_id, ice_servers } = streamData;;
+      const localStreamId = id;
+      const localSessionId = session_id;     
+      console.log("🚀 New D-ID Stream LocalID:", localStreamId);
+      console.log("🚀 New D-ID Session LocalID:", localSessionId);
       setStreamId(id);
       setSessionId(session_id);
-      const localStreamId = id;
       console.log("🚀 New D-ID Session ID:", session_id);
+      console.log("🚀 New D-ID Stream ID:", id);
+      
 
       // ✅ Set up WebRTC PeerConnection
       const pc = new RTCPeerConnection({
-        iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
+        iceServers: ice_servers
       });
 
       pc.oniceconnectionstatechange = () => {
@@ -47,7 +52,7 @@ function DIDAvatar({ textToSpeak }) {
           console.error("❌ ICE Candidate Error: Missing streamId! Cannot send ICE candidates.");
           return;
       }
-      if (!sessionId) {
+      if (!localSessionId) {
           console.error("❌ ICE Candidate Error: Missing sessionId! Cannot send ICE candidates.");
           return;
       }
