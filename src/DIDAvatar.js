@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createStream, sendMessage } from "./didService";
 
-//const API_URL = "https://quantumgamemaster-08115932719b.herokuapp.com/proxy/did";  // ✅ Use the proxy instead of D-ID directly
-const API_URL = "https://api.d-id.com/talks/streams/{stream_id}/webrtc";
+const API_URL = "https://quantumgamemaster-08115932719b.herokuapp.com/proxy/did";  // ✅ Use the proxy instead of D-ID directly
+//const API_URL = "https://api.d-id.com/talks/streams/{stream_id}/webrtc";
 const DID_API_KEY = "cm9iZXJ0Lndhc2hrb0BnbWFpbC5jb20:ZSjinQdKYG7SxjfrwGenn"
 
 function DIDAvatar({ textToSpeak }) {
@@ -22,7 +22,9 @@ function DIDAvatar({ textToSpeak }) {
         return;
       }
 
-      setStreamId(streamData.id);
+      const { id, offer, session_id } = streamData;
+      setStreamId(id);
+      setSessionId(session_id);
 
       // ✅ Set up WebRTC PeerConnection
       const pc = new RTCPeerConnection({
@@ -48,15 +50,21 @@ function DIDAvatar({ textToSpeak }) {
           answer: { type: "answer", sdp: answer.sdp }
         }, null, 2));
         
-        const response = await fetch(`${API_URL}/webrtc/${streamData.id}`, {
-          method: "POST",
-          credentials: "include",
-          headers: { 
-            "Authorization": `Basic ${DID_API_KEY}`,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ answer: { type: "answer", sdp: answer.sdp } })
-        });
+        const sdpResponse = await fetch(
+          `${API_URL}/sdp/${streamData.id}`,   // Instead of /webrtc
+          {
+            method: "POST",
+            headers: {
+              "Authorization": `Basic ${DID_API_KEY}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              answer: { type: "answer", sdp: answer.sdp },
+              session_id  
+            }),
+          }
+        );
+        
         
         console.log("🔍 WebRTC Answer Response Status:", response.status);
         console.log("🔍 WebRTC Answer Response Text:", await response.text());
