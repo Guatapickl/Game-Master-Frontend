@@ -8,6 +8,7 @@ const DID_API_KEY = "cm9iZXJ0Lndhc2hrb0BnbWFpbC5jb20:ZSjinQdKYG7SxjfrwGenn"
 function DIDAvatar({ textToSpeak }) {
   const videoRef = useRef(null);
   const [streamId, setStreamId] = useState(null);
+  const [sessionId, setSessionId] = useState(null);
   const [peerConnection, setPeerConnection] = useState(null);
 
   useEffect(() => {
@@ -31,6 +32,26 @@ function DIDAvatar({ textToSpeak }) {
         iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
       });
 
+      // For passing ICE candidates back:
+      pc.onicecandidate = async (event) => {
+        if (event.candidate) {
+          const { candidate, sdpMid, sdpMLineIndex } = event.candidate;
+          await fetch(`${API_URL}/ice/${id}`, {
+            method: "POST",
+            headers: {
+              "Authorization": `Basic ${DID_API_KEY}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              candidate,
+              sdpMid,
+              sdpMLineIndex,
+              session_id, // must include session_id
+            }),
+          });
+        }
+      };
+
       pc.ontrack = (event) => {
         console.log("🎥 WebRTC track received:", event);
         if (videoRef.current) {
@@ -39,7 +60,7 @@ function DIDAvatar({ textToSpeak }) {
       };
 
       try {
-        await pc.setRemoteDescription(new RTCSessionDescription(streamData.offer));
+        await pc.setRemoteDescription(new RTCSessionDescription(offer));
         const answer = await pc.createAnswer();
         await pc.setLocalDescription(answer);
 
@@ -66,8 +87,9 @@ function DIDAvatar({ textToSpeak }) {
         );
         
         
-        console.log("🔍 WebRTC Answer Response Status:", response.status);
-        console.log("🔍 WebRTC Answer Response Text:", await response.text());
+        console.log("🔍 WebRTC Answer Response Status:", sdpResponse.status);
+        console.log("🔍 WebRTC Answer Response Text:", await sdpResponse.text());
+        
 
         setPeerConnection(pc);
       } catch (error) {
@@ -88,7 +110,10 @@ function DIDAvatar({ textToSpeak }) {
   return (
     <div>
       <h2>AI Avatar</h2>
-      <video ref={videoRef} autoPlay playsInline style={{ width: "300px", height: "300px" }} />
+      <video ref={videoRef} 
+      autoPlay 
+      playsInline 
+      style={{ width: "300px", height: "300px" }} />
     </div>
   );
 }
