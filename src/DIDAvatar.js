@@ -17,6 +17,7 @@ function DIDAvatar({ textToSpeak }) {
 
       const streamData = await createStream();
       console.log("🟢 D-ID Full Response:", JSON.stringify(streamData, null, 2));
+      
 
       if (!streamData || !streamData.id || !streamData.offer) {
         console.error("❌ Failed to create D-ID stream.", streamData);
@@ -26,6 +27,7 @@ function DIDAvatar({ textToSpeak }) {
       const { id, offer, session_id } = streamData;
       setStreamId(id);
       setSessionId(session_id);
+      console.log("🚀 New D-ID Session ID:", session_id);
 
       // ✅ Set up WebRTC PeerConnection
       const pc = new RTCPeerConnection({
@@ -103,9 +105,9 @@ function DIDAvatar({ textToSpeak }) {
   useEffect(() => {
     if (textToSpeak && streamId) {
       console.log("💬 Sending text to D-ID Avatar:", textToSpeak);
-      sendMessage(streamId, textToSpeak);
+      sendMessage(streamId, textToSpeak, sessionId);
     }
-  }, [textToSpeak, streamId]);
+  }, [textToSpeak, streamId, sessionId]);
 
   return (
     <div>

@@ -22,9 +22,12 @@ export const createStream = async () => {
   }
 };
 
-export const sendMessage = async (streamId, message) => {
+export const sendMessage = async (streamId, message, sessionId) => {
   try {
-    await axios.post(`${API_URL}/messages/${streamId}`, { text: message });
+    await axios.post(`${API_URL}/messages/${streamId}`, {
+      session_id: sessionId,
+      text: message,
+    });
   } catch (error) {
     console.error("Error sending message to D-ID avatar:", error);
   }
