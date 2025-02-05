@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import DIDAvatar from './DIDAvatar';
 
 const API_URL = "https://quantumgamemaster-08115932719b.herokuapp.com";
 
