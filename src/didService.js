@@ -10,7 +10,7 @@ export const createStream = async () => {
       script: {
         type: "text",
         input: "Initializing response...",
-        provider: { type: "microsoft", voice_id: "Andrew Dragon HD Latest", language: "en-US" }
+        provider: { type: "microsoft", voice_id: "Daniel", language: "en-US" }
       },
       config: { stitch: true }
     });
@@ -24,11 +24,20 @@ export const createStream = async () => {
 
 export const sendMessage = async (streamId, message, sessionId) => {
   try {
-    await axios.post(`${API_URL}/messages/${streamId}`, {
+    const requestBody = {
       session_id: sessionId,
       text: message,
-    });
+    };
+
+    console.log("📡 Sending Message to D-ID:", JSON.stringify(requestBody, null, 2));
+
+    const response = await axios.post(`${API_URL}/messages/${streamId}`, requestBody);
+
+    console.log("✅ D-ID Response Status:", response.status);
+    console.log("✅ D-ID Response Data:", JSON.stringify(response.data, null, 2));
+
+    return response.data;
   } catch (error) {
-    console.error("Error sending message to D-ID avatar:", error);
+    console.error("❌ Error sending message to D-ID avatar:", error);
   }
 };
