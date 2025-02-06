@@ -123,6 +123,20 @@ function DIDAvatar({ textToSpeak }) {
         initializeStream();
     }, []);
 
+    useEffect(() => {
+      if (textToSpeak && streamId && sanitizedSessionId) {
+          console.log("💬 Preparing to send text to D-ID Avatar...");
+          console.log("📡 TextToSpeak:", textToSpeak);
+          console.log("📡 Stream ID:", streamId);
+          console.log("📡 Session ID:", sanitizedSessionId);
+  
+          sendMessage(streamId, textToSpeak, sanitizedSessionId);
+      } else {
+          console.warn("⚠️ TextToSpeak, Stream ID, or Session ID missing! Not sending message.");
+      }
+  }, [textToSpeak, streamId, sanitizedSessionId]);  // ✅ Runs whenever textToSpeak updates
+  
+
     return (
         <div>
             <h2>AI Avatar</h2>
