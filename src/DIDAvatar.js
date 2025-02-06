@@ -140,7 +140,13 @@ function DIDAvatar({ textToSpeak }) {
     return (
         <div>
             <h2>Subspace Liason Universal Transeiver</h2>
-            <video ref={videoRef} autoPlay playsInline />
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              style={{ width: "100%", height: "auto", maxWidth: "100%" }}
+            />
+
             <button onClick={() => {
                 if (videoRef.current) {
                     console.log("🔊 Unmuting video...");
@@ -155,3 +161,4 @@ function DIDAvatar({ textToSpeak }) {
 }
 
 export default DIDAvatar;
+Saturday11

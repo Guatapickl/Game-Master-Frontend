@@ -58,17 +58,18 @@ function DIDChat() {
         <DIDAvatar textToSpeak={avatarMessage} />
       </div>
 
-      <div style={{ flex: 1, maxWidth: "600px", margin: "0 auto", padding: "20px" }}>
-        <h1>D-ID Chat</h1>
-        <div ref={chatContainerRef} style={{ border: "1px solid #ccc", padding: 10, minHeight: 300, maxHeight: "60vh", overflowY: "auto" }}>
-          {messages.map((msg, idx) => (
-            <div key={idx} style={{ marginBottom: 8, padding: "8px", backgroundColor: msg.role === "User" ? "#f0f0f0" : "#e6f3ff", borderRadius: "4px" }}>
-              <strong>{msg.role}:</strong> {msg.text}
-            </div>
-          ))}
-        </div>
-
-        <div style={{ marginTop: 10 }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "100vh",
+          backgroundImage: "url('https://quantumgamemaster.netlify.app/SLUT.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+        <div style={{ marginTop: 5 }}>
           <input
             style={{ width: "80%", padding: 8, borderRadius: "4px", border: "1px solid #ccc" }}
             type="text"
