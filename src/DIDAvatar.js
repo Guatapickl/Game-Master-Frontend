@@ -161,4 +161,3 @@ function DIDAvatar({ textToSpeak }) {
 }
 
 export default DIDAvatar;
-Saturday11
