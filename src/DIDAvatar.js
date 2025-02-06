@@ -139,19 +139,16 @@ function DIDAvatar({ textToSpeak }) {
 
     return (
         <div>
-            <h2>AI Avatar</h2>
-            <video ref={videoRef} autoPlay playsInline muted />
+            <h2>Subspace Liason Universal Transeiver</h2>
+            <video ref={videoRef} autoPlay playsInline />
             <button onClick={() => {
-    console.log("🛠️ Manually trying to play video...");
-    console.log("🎥 Video Tracks on button click:", videoRef.current?.srcObject?.getVideoTracks());
-    console.log("🎥 Video Ready State on button click:", videoRef.current?.readyState);
-
-    videoRef.current?.play()
-        .then(() => console.log("✅ Video playback started manually!"))
-        .catch((err) => console.error("❌ Video play error on button click:", err));
-}}>
-    ▶️ Force Video Play (Debug)
-</button>
+                if (videoRef.current) {
+                    console.log("🔊 Unmuting video...");
+                    videoRef.current.muted = false;
+                }
+            }}>
+                🔊 Align Resonators 🔊
+            </button>
 
         </div>
     );
