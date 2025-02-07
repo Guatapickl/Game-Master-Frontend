@@ -11,6 +11,7 @@ function DIDChat() {
   const [showResonatorButton, setShowResonatorButton] = useState(true);
   const videoRef = useRef(null);
   const [currentPlayer, setCurrentPlayer] = useState(null);
+  const [didGreet, setDidGreet] = useState(false);
 
   useEffect(() => {
     const storedName = localStorage.getItem("player_name");
@@ -61,6 +62,16 @@ function DIDChat() {
 
     setUserInput("");
   };
+
+  useEffect(() => {
+    if (currentPlayer && !didGreet) {
+      // Immediately send "Hi, I'm XYZ" to the back end
+      sendMessage(`Hi, I'm ${currentPlayer}`);
+      setDidGreet(true); // Prevent sending it again in future renders
+    }
+  }, [currentPlayer, didGreet]);
+
+
   const handleResonatorClick = () => {
     if (videoRef.current) {
       videoRef.current.muted = false;
@@ -84,7 +95,7 @@ function DIDChat() {
             if (userInput.trim()) {
               localStorage.setItem("player_name", userInput);
               setCurrentPlayer(userInput);
-              window.location.reload();  // Refresh to trigger the UI transition
+              setUserInput("");
             }
           }}
           style={{ padding: "10px 20px", backgroundColor: "#1e90ff", color: "white", border: "none", borderRadius: "5px" }}
