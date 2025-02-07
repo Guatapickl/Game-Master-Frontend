@@ -69,11 +69,22 @@ function DIDChat() {
   };
 
   useEffect(() => {
+    const storedName = localStorage.getItem("player_name");
+    if (storedName) {
+      console.log("✅ Found player in localStorage:", storedName);  // ✅ Log this
+      setCurrentPlayer(storedName);
+    }
+  }, []);
+  
+
+  useEffect(() => {
+    console.log("🔍 Checking Auto-Greet Conditions:", { currentPlayer, didGreet });  // ✅ Debug log
     if (currentPlayer && !didGreet) {
       // Immediately send "Hi, I'm XYZ" to the back end
       console.log(`👋 Auto-greeting with "Hi, I'm ${currentPlayer}"`); 
-      sendMessage(`Hi, I'm ${currentPlayer}`);
-      setDidGreet(true); // Prevent sending it again in future renders
+      setUserInput(`Hi, I'm ${currentPlayer}`);  // ✅ Set userInput
+      sendMessage();                            // ✅ Call sendMessage without parameters
+      setDidGreet(true);                        // ✅ Prevent duplicate greetings
     }
   }, [currentPlayer, didGreet]);
 
