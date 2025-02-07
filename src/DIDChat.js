@@ -60,25 +60,53 @@ function DIDChat() {
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
-      }}
-    >
+        maxWidth: "600px",
+        margin: "0 auto",
+        padding: "20px",
+        boxSizing: "border-box"
+      }}>
+        
       <div style={{ position: "relative", display: "flex", justifyContent: "center", alignItems: "center", padding: "20px" }}>
         <DIDAvatar textToSpeak={avatarMessage} />
       </div>
 
-      <div style={{ marginTop: 5 }}>
+      <div style={{
+          display: "flex",
+          flexDirection: window.innerWidth < 600 ? "column" : "row",
+          alignItems: "center",
+          gap: "10px", // Space between elements
+          padding: "10px"
+        }}>
           <input
-            style={{ width: "80%", padding: 8, borderRadius: "4px", border: "1px solid #ccc" }}
+            style={{
+              width: "100%",
+              maxWidth: "400px",
+              padding: "10px",
+              borderRadius: "8px",
+              border: "1px solid #444",
+            }}
             type="text"
-            placeholder="Type your message..."
+            placeholder="Transcode communication relay:"
             value={userInput}
             onChange={(e) => setUserInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
           />
-          <button onClick={sendMessage} style={{ padding: "8px 16px", marginLeft: 5, backgroundColor: "#007bff", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}>
-            Send
+          <button
+            onClick={sendMessage}
+            style={{
+              padding: "10px 20px",
+              backgroundColor: "#1e90ff",
+              color: "white",
+              border: "none",
+              borderRadius: "8px",
+              cursor: "pointer",
+            }}
+          >
+            Transmit
           </button>
         </div>
+
+
       </div>
   );
 }

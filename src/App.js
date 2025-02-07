@@ -184,7 +184,7 @@ function App() {
 
     // If we know the name, show the main interface
     return (
-      <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+      <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", maxWidth: "600px", margin: "0 auto", padding: "20px", boxSizing: "border-box" }}>
         
         {/* TOP SECTION: D-ID Avatar or whatever "interdimensional" effect you want */}
         <div style={{
@@ -199,12 +199,13 @@ function App() {
   
         {/* MIDDLE SECTION: Chat Area */}
         <div style={{
-          flex: 1,
-          maxWidth: "600px",
-          margin: "0 auto",
-          padding: "20px"
-        }}>
-          <h1>The Etherlink</h1>
+            flex: 1,
+            maxWidth: "100%",
+            margin: "0 auto",
+            padding: "10px",
+            boxSizing: "border-box"  // Ensures padding doesn’t break the layout
+          }}>
+          <h1>Subspace Liaison, Universal Transeiver</h1>
           <div style={{
             marginBottom: "20px",
             padding: "10px",
@@ -249,7 +250,7 @@ function App() {
                 border: "1px solid #ccc"
               }}
               type="text"
-              placeholder="Type your message..."
+              placeholder="Transcode Communication Relay"
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
               onKeyDown={(e) => {
