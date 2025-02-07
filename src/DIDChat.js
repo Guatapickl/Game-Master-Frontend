@@ -12,6 +12,8 @@ function DIDChat() {
   const videoRef = useRef(null);
   const [currentPlayer, setCurrentPlayer] = useState(null);
   const [didGreet, setDidGreet] = useState(false);
+  const [nameJustSet, setNameJustSet] = useState(false);  // ✅ New state
+
 
   useEffect(() => {
     const storedName = localStorage.getItem("player_name");
@@ -68,25 +70,16 @@ function DIDChat() {
     setUserInput("");
   };
 
-  useEffect(() => {
-    const storedName = localStorage.getItem("player_name");
-    if (storedName) {
-      console.log("✅ Found player in localStorage:", storedName);  // ✅ Log this
-      setCurrentPlayer(storedName);
-    }
-  }, []);
   
-
   useEffect(() => {
-    console.log("🔍 Checking Auto-Greet Conditions:", { currentPlayer, didGreet });  // ✅ Debug log
-    if (currentPlayer && !didGreet) {
-      // Immediately send "Hi, I'm XYZ" to the back end
+    if (currentPlayer && nameJustSet && !didGreet) {  // ✅ Added !didGreet to prevent duplicates
       console.log(`👋 Auto-greeting with "Hi, I'm ${currentPlayer}"`); 
-      setUserInput(`Hi, I'm ${currentPlayer}`);  // ✅ Set userInput
-      sendMessage();                            // ✅ Call sendMessage without parameters
-      setDidGreet(true);                        // ✅ Prevent duplicate greetings
+      setUserInput(`Hi, I'm ${currentPlayer}`);
+      sendMessage();
+      setDidGreet(true);  // ✅ Ensure greeting doesn't repeat
+      setNameJustSet(false);  // ✅ Prevent future auto-greets
     }
-  }, [currentPlayer, didGreet]);
+  }, [currentPlayer, nameJustSet]);
 
 
   const handleResonatorClick = () => {
@@ -112,6 +105,7 @@ function DIDChat() {
             if (userInput.trim()) {
               localStorage.setItem("player_name", userInput);
               setCurrentPlayer(userInput);
+              setNameJustSet(true); 
               setUserInput("");
             }
           }}
