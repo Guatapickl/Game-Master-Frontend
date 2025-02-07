@@ -53,23 +53,20 @@ function DIDChat() {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      <div style={{ backgroundColor: "#333", color: "#fff", padding: "10px", display: "flex", justifyContent: "center" }}>
+    <div style={{ display: "flex", 
+        flexDirection: "column",
+        minHeight: "100vh",
+        backgroundImage: "url('https://quantumgamemaster.netlify.app/SLUT.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      <div style={{ position: "relative", display: "flex", justifyContent: "center", alignItems: "center", padding: "20px" }}>
         <DIDAvatar textToSpeak={avatarMessage} />
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          minHeight: "100vh",
-          backgroundImage: "url('https://quantumgamemaster.netlify.app/SLUT.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
-        <div style={{ marginTop: 5 }}>
+      <div style={{ marginTop: 5 }}>
           <input
             style={{ width: "80%", padding: 8, borderRadius: "4px", border: "1px solid #ccc" }}
             type="text"
@@ -83,7 +80,6 @@ function DIDChat() {
           </button>
         </div>
       </div>
-    </div>
   );
 }
 

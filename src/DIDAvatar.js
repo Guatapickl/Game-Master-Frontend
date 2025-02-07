@@ -13,7 +13,7 @@ function DIDAvatar({ textToSpeak }) {
 
     useEffect(() => {
         const initializeStream = async () => {
-            console.log("🔍 Initializing D-ID WebRTC stream...");
+            //console.log("🔍 Initializing D-ID WebRTC stream...");
 
             const streamData = await createStream();
             console.log("🟢 D-ID Full Response:", JSON.stringify(streamData, null, 2));
@@ -29,66 +29,66 @@ function DIDAvatar({ textToSpeak }) {
             const cleanSessionId = session_id.split(";")[0]; 
             setSanitizedSessionId(cleanSessionId);
 
-            console.log("🚀 New D-ID Stream ID:", id);
-            console.log("🚀 New D-ID Session ID:", cleanSessionId);
+            //console.log("🚀 New D-ID Stream ID:", id);
+            //console.log("🚀 New D-ID Session ID:", cleanSessionId);
 
             const pc = new RTCPeerConnection({ iceServers: ice_servers });
 
             pc.oniceconnectionstatechange = () => {
-              console.log("🔍 ICE Connection State:", pc.iceConnectionState);
+              //console.log("🔍 ICE Connection State:", pc.iceConnectionState);
               if (pc.iceConnectionState === "connected" || pc.iceConnectionState === "completed") {
-                  console.log("✅ WebRTC is now fully connected!");
+                  //console.log("✅ WebRTC is now fully connected!");
           
-                  setTimeout(() => {
-                      if (videoRef.current && videoRef.current.srcObject) {
-                          console.log("🔄 Forcing video playback after ICE connection...");
-                          
-                          // ✅ NEW: Check if video tracks are still present
-                          console.log("🎥 Video Tracks after ICE:", videoRef.current.srcObject?.getVideoTracks());
-          
-                          videoRef.current.play()
-                              .then(() => {
-                                  console.log("🎥 Video playback started successfully after ICE!");
-                                  console.log("🎥 Video Ready State after ICE:", videoRef.current.readyState);
-                              })
-                              .catch((err) => console.error("❌ Video play error after ICE:", err));
-                      }
-                  }, 500);
+                  //setTimeout(() => {
+                  //    if (videoRef.current && videoRef.current.srcObject) {
+                  //       console.log("🔄 Forcing video playback after ICE connection...");
+                  //        
+                  //        // ✅ NEW: Check if video tracks are still present
+                  //        console.log("🎥 Video Tracks after ICE:", videoRef.current.srcObject?.getVideoTracks());
+
+                  //        videoRef.current.play()
+                  //            .then(() => {
+                  //                console.log("🎥 Video playback started successfully after ICE!");
+                  //               console.log("🎥 Video Ready State after ICE:", videoRef.current.readyState);
+                  //            })
+                  //            .catch((err) => console.error("❌ Video play error after ICE:", err));
+                  //    }
+                  //}, 500);
               }
           };
           
 
             pc.ontrack = (event) => {
-              console.log("🎥 Received 'ontrack' event!");
-              console.log(`🔍 Number of streams: ${event.streams.length}`);
+              //console.log("🎥 Received 'ontrack' event!");
+              //console.log(`🔍 Number of streams: ${event.streams.length}`);
           
               event.streams.forEach((stream, index) => {
-                  console.log(`📡 Stream ${index} ID: ${stream.id}`);
+                  //console.log(`📡 Stream ${index} ID: ${stream.id}`);
                   stream.getTracks().forEach((track, trackIndex) => {
-                      console.log(`🎬 Track ${trackIndex} - ID: ${track.id}, Kind: ${track.kind}`);
+                      //console.log(`🎬 Track ${trackIndex} - ID: ${track.id}, Kind: ${track.kind}`);
                       mediaStream.addTrack(track);
                   });
               });
           
               if (videoRef.current) {
-                  console.log("🔍 Checking video element state before setting srcObject...");
-                  console.log("🔍 Current video srcObject:", videoRef.current.srcObject);
+                  //console.log("🔍 Checking video element state before setting srcObject...");
+                  //console.log("🔍 Current video srcObject:", videoRef.current.srcObject);
           
                   // ✅ NEW: Check if video tracks are present
-                  console.log("🎥 Video Tracks:", mediaStream.getVideoTracks());
+                  //console.log("🎥 Video Tracks:", mediaStream.getVideoTracks());
           
                   if (!videoRef.current.srcObject || videoRef.current.srcObject !== mediaStream) {
-                      console.log("📡 Setting video source object...");
+                      //console.log("📡 Setting video source object...");
                       videoRef.current.srcObject = mediaStream;
           
                       setTimeout(() => {
                           // ✅ NEW: Check if video is actually playing
-                          console.log("🎥 Is Video Playing?", !videoRef.current.paused);
+                          //console.log("🎥 Is Video Playing?", !videoRef.current.paused);
           
                           videoRef.current.play()
                               .then(() => {
-                                  console.log("🎥 Video playback started successfully!");
-                                  console.log("🎥 Video Ready State:", videoRef.current.readyState); // Check readiness
+                                  //console.log("🎥 Video playback started successfully!");
+                                  //console.log("🎥 Video Ready State:", videoRef.current.readyState); // Check readiness
                               })
                               .catch((err) => console.error("❌ Video play error:", err));
                       }, 500);
@@ -144,7 +144,11 @@ function DIDAvatar({ textToSpeak }) {
               ref={videoRef}
               autoPlay
               playsInline
-              style={{ width: "100%", height: "auto", maxWidth: "100%" }}
+              style={{ width: "100%", height: "auto", maxWidth: "100%",     position: "relative", // Ensures it appears on top
+                zIndex: 2,            // Layering priority
+                borderRadius: "10px", // Optional: adds rounded corners
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.5)" // Optional: adds subtle shadow 
+               }} 
             />
 
             <button onClick={() => {
