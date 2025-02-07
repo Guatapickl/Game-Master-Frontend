@@ -33,12 +33,14 @@ function DIDChat() {
   }, [avatarMessage]);  // ✅ Moved useEffect OUTSIDE sendMessage
 
   const sendMessage = async () => {
+    console.log("🚀 sendMessage called with:", userInput);
     if (!userInput.trim()) return;
 
     const newMessages = [...messages, { role: "User", text: userInput }];
     setMessages(newMessages);
 
     try {
+      console.log("📡 Sending POST request to /chat with message:", userInput);
       const response = await fetch(`${API_URL}/chat`, {
         method: "POST",
         credentials: "include",
@@ -48,9 +50,12 @@ function DIDChat() {
         body: JSON.stringify({ message: userInput }),
       });
 
+      console.log("✅ Received response with status:", response.status); 
+
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
       const data = await response.json();
+      console.log("📥 Response data:", data);
       setMessages([...newMessages, { role: "Game Master", text: data.response }]);
 
       setAvatarMessage(data.response);  // ✅ Now properly updates avatarMessage
@@ -66,6 +71,7 @@ function DIDChat() {
   useEffect(() => {
     if (currentPlayer && !didGreet) {
       // Immediately send "Hi, I'm XYZ" to the back end
+      console.log(`👋 Auto-greeting with "Hi, I'm ${currentPlayer}"`); 
       sendMessage(`Hi, I'm ${currentPlayer}`);
       setDidGreet(true); // Prevent sending it again in future renders
     }
