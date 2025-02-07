@@ -139,7 +139,6 @@ function DIDAvatar({ textToSpeak }) {
 
     return (
         <div>
-            <h2>Subspace Liason Universal Transeiver</h2>
             <video
               ref={videoRef}
               autoPlay

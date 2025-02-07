@@ -10,6 +10,14 @@ function DIDChat() {
   const chatContainerRef = useRef(null);
   const [showResonatorButton, setShowResonatorButton] = useState(true);
   const videoRef = useRef(null);
+  const [currentPlayer, setCurrentPlayer] = useState(null);
+
+  useEffect(() => {
+    const storedName = localStorage.getItem("player_name");
+    if (storedName) {
+      setCurrentPlayer(storedName);
+    }
+  }, []);
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -59,6 +67,33 @@ function DIDChat() {
     }
     setShowResonatorButton(false);
   };
+
+  if (!currentPlayer) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#000", color: "#fff" }}>
+        <h1>Identify Yourself</h1>
+        <input
+          type="text"
+          value={userInput}
+          onChange={(e) => setUserInput(e.target.value)}
+          placeholder="Enter your name"
+          style={{ padding: "10px", borderRadius: "5px", marginBottom: "10px" }}
+        />
+        <button
+          onClick={() => {
+            if (userInput.trim()) {
+              localStorage.setItem("player_name", userInput);
+              setCurrentPlayer(userInput);
+              window.location.reload();  // Refresh to trigger the UI transition
+            }
+          }}
+          style={{ padding: "10px 20px", backgroundColor: "#1e90ff", color: "white", border: "none", borderRadius: "5px" }}
+        >
+          Send
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundImage: "url('https://quantumgamemaster.netlify.app/SLUT.jpg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", maxWidth: "600px", margin: "0 auto", padding: "20px", boxSizing: "border-box" }}>
