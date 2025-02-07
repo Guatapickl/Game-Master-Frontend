@@ -72,14 +72,20 @@ function DIDChat() {
 
   
   useEffect(() => {
-    if (currentPlayer && nameJustSet && !didGreet) {  // ✅ Added !didGreet to prevent duplicates
+    if (currentPlayer && nameJustSet && !didGreet) {
       console.log(`👋 Auto-greeting with "Hi, I'm ${currentPlayer}"`); 
       setUserInput(`Hi, I'm ${currentPlayer}`);
-      sendMessage();
-      setDidGreet(true);  // ✅ Ensure greeting doesn't repeat
-      setNameJustSet(false);  // ✅ Prevent future auto-greets
+  
+      // ✅ Trigger sendMessage after a brief delay to ensure state update
+      setTimeout(() => {
+        sendMessage();
+      }, 1000); // 100ms delay helps React finish updating userInput
+  
+      setDidGreet(true);
+      setNameJustSet(false);
     }
   }, [currentPlayer, nameJustSet]);
+  
 
 
   const handleResonatorClick = () => {
