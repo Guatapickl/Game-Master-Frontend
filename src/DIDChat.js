@@ -8,6 +8,8 @@ function DIDChat() {
   const [userInput, setUserInput] = useState("");
   const [avatarMessage, setAvatarMessage] = useState("");  // ✅ Keep state outside
   const chatContainerRef = useRef(null);
+  const [showResonatorButton, setShowResonatorButton] = useState(true);
+  const videoRef = useRef(null);
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -51,6 +53,12 @@ function DIDChat() {
 
     setUserInput("");
   };
+  const handleResonatorClick = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = false;
+    }
+    setShowResonatorButton(false);
+  };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundImage: "url('https://quantumgamemaster.netlify.app/SLUT.jpg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", maxWidth: "600px", margin: "0 auto", padding: "20px", boxSizing: "border-box" }}>
@@ -67,7 +75,7 @@ function DIDChat() {
       </h1>
 
       <div style={{ position: "relative", display: "flex", justifyContent: "center", alignItems: "center", padding: "20px" }}>
-        <DIDAvatar textToSpeak={avatarMessage} />
+        <DIDAvatar textToSpeak={avatarMessage} videoRef={videoRef} />
       </div>
 
       <div ref={chatContainerRef} style={{ flex: 1, overflowY: "auto", padding: "10px" }}>
