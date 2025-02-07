@@ -53,62 +53,62 @@ function DIDChat() {
   };
 
   return (
-    <div style={{ display: "flex", 
-        flexDirection: "column",
-        minHeight: "100vh",
-        backgroundImage: "url('https://quantumgamemaster.netlify.app/SLUT.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        maxWidth: "600px",
-        margin: "0 auto",
-        padding: "20px",
-        boxSizing: "border-box"
-      }}>
-        
-      <div style={{ position: "relative", display: "flex", justifyContent: "center", alignItems: "center", padding: "20px" }}>
-        <DIDAvatar textToSpeak={avatarMessage} />
-      </div>
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundImage: "url('https://quantumgamemaster.netlify.app/SLUT.jpg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", maxWidth: "600px", margin: "0 auto", padding: "20px", boxSizing: "border-box" }}>
+    <div style={{ position: "relative", display: "flex", justifyContent: "center", alignItems: "center", padding: "20px" }}>
+      <DIDAvatar textToSpeak={avatarMessage} />
+    </div>
 
-      <div style={{
-          display: "flex",
-          flexDirection: window.innerWidth < 600 ? "column" : "row",
-          alignItems: "center",
-          gap: "10px", // Space between elements
-          padding: "10px"
-        }}>
-          <input
-            style={{
-              width: "100%",
-              maxWidth: "400px",
-              padding: "10px",
-              borderRadius: "8px",
-              border: "1px solid #444",
-            }}
-            type="text"
-            placeholder="Transcode communication relay:"
-            value={userInput}
-            onChange={(e) => setUserInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-          />
-          <button
-            onClick={sendMessage}
-            style={{
-              padding: "10px 20px",
-              backgroundColor: "#1e90ff",
-              color: "white",
-              border: "none",
-              borderRadius: "8px",
-              cursor: "pointer",
-            }}
-          >
-            Transmit
-          </button>
+    <h1 style={{
+      fontFamily: 'Orbitron, sans-serif',
+      fontSize: '1.8rem',
+      color: '#00FFFF',
+      textAlign: 'center',
+      textShadow: '0 0 10px #00FFFF, 0 0 20px #00FFFF',
+      letterSpacing: '2px',
+      marginBottom: '10px'
+    }}>
+      <span style={{ textDecoration: 'underline' }}>S</span>ubspace <span style={{ textDecoration: 'underline' }}>L</span>iaison <span style={{ textDecoration: 'underline' }}>U</span>niversal <span style={{ textDecoration: 'underline' }}>T</span>ransceiver
+    </h1>
+
+    <div ref={chatContainerRef} style={{ flex: 1, overflowY: "auto", padding: "10px" }}>
+      {messages.map((msg, idx) => (
+        <div key={idx} style={{ marginBottom: "10px", backgroundColor: msg.role === "User" ? "#f0f0f0" : "#e0e0e0", padding: "10px", borderRadius: "5px" }}>
+          <strong>{msg.role}:</strong> {msg.text}
         </div>
+      ))}
+    </div>
 
+    <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, backgroundColor: "rgba(0, 0, 0, 0.8)", padding: "10px", display: "flex", justifyContent: "center", alignItems: "center", gap: "10px" }}>
+      <button
+        onClick={() => {
+          if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+          }
+        }}
+        style={{ padding: "10px 20px", backgroundColor: "#1e90ff", color: "white", border: "none", borderRadius: "8px", cursor: "pointer" }}
+      >
+        Align Resonators
+      </button>
 
-      </div>
-  );
+      <input
+        style={{ width: "60%", padding: "10px", borderRadius: "8px", border: "1px solid #444" }}
+        type="text"
+        placeholder="Transcode communication relay:"
+        value={userInput}
+        onChange={(e) => setUserInput(e.target.value)}
+        onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+      />
+
+      <button
+        onClick={sendMessage}
+        style={{ padding: "10px 20px", backgroundColor: "#1e90ff", color: "white", border: "none", borderRadius: "8px", cursor: "pointer" }}
+      >
+        Transmit
+      </button>
+    </div>
+  </div>
+);
 }
+
 
 export default DIDChat;
