@@ -142,14 +142,6 @@ function DIDChat() {
         <DIDAvatar textToSpeak={avatarMessage} videoRef={videoRef} />
       </div>
 
-      <div ref={chatContainerRef} style={{ flex: 1, overflowY: "auto", padding: "10px" }}>
-        {messages.map((msg, idx) => (
-          <div key={idx} style={{ marginBottom: "10px", backgroundColor: msg.role === "User" ? "#f0f0f0" : "#e0e0e0", padding: "10px", borderRadius: "5px" }}>
-            <strong>{msg.role}:</strong> {msg.text}
-          </div>
-        ))}
-      </div>
-
       {showResonatorButton && (
         <div style={{ textAlign: "center", margin: "10px 0" }}>
           <button
@@ -160,6 +152,16 @@ function DIDChat() {
           </button>
         </div>
       )}
+      
+      <div ref={chatContainerRef} style={{ flex: 1, overflowY: "auto", padding: "10px" }}>
+        {messages.map((msg, idx) => (
+          <div key={idx} style={{ marginBottom: "10px", backgroundColor: msg.role === "User" ? "#f0f0f0" : "#e0e0e0", padding: "10px", borderRadius: "5px" }}>
+            <strong>{msg.role}:</strong> {msg.text}
+          </div>
+        ))}
+      </div>
+
+
 
       <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, backgroundColor: "rgba(0, 0, 0, 0.8)", padding: "10px", display: "flex", justifyContent: "center", alignItems: "center", gap: "10px" }}>
         <input

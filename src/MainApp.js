@@ -6,14 +6,9 @@ import DIDChat from "./DIDChat";
 function MainApp() {
   return (
     <Router>
-      <div style={{ textAlign: "center", padding: "10px" }}>
-        <Link to="/" style={{ marginRight: "10px" }}>Etherlink Chat</Link>
-        <Link to="/did-chat">D-ID Chat</Link>
-      </div>
-      
       <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/did-chat" element={<DIDChat />} />
+        <Route path="/" element={<DIDChat />} /> {/* Default homepage */}
+        <Route path="/quantumchat" element={<App />} /> {/* Etherlink Chat */}
       </Routes>
     </Router>
   );
