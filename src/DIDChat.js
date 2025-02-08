@@ -6,13 +6,13 @@ const API_URL = "https://quantumgamemaster-08115932719b.herokuapp.com";
 function DIDChat() {
   const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState("");
-  const [avatarMessage, setAvatarMessage] = useState("");  // ✅ Keep state outside
+  const [avatarMessage, setAvatarMessage] = useState("");
   const chatContainerRef = useRef(null);
   const [showResonatorButton, setShowResonatorButton] = useState(true);
   const videoRef = useRef(null);
   const [currentPlayer, setCurrentPlayer] = useState(null);
-  const [didGreet, setDidGreet] = useState(false);
-  const [nameJustSet, setNameJustSet] = useState(false);  // ✅ New state
+  const [didGreet, setDidGreet] = useState(true);
+  const [nameJustSet, setNameJustSet] = useState(false); 
   const [isFadingOut, setIsFadingOut] = useState(false);
   const [currentMessage, setCurrentMessage] = useState(null);
 
@@ -33,7 +33,7 @@ function DIDChat() {
     console.log("🚀 sendMessage called with:", message);
     if (!message.trim()) return;
 
-    const newMessage = [...messages, { role: "User", text: userInput }];
+    const newMessage = [...messages, { role: "User", text: message }];
     setMessages(prevMessages => [...prevMessages, newMessage]);
 
     // Simulate a delay for Game Master's response
@@ -114,7 +114,8 @@ function DIDChat() {
         <button
         onClick={() => {
           if (userInput.trim()) {
-            setCurrentPlayer(userInput);  // ✅ Set the player name immediately
+            setCurrentPlayer(userInput);
+            setDidGreet(false)  // ✅ Set the player name immediately
             setNameJustSet(true);         // ✅ Trigger auto-greeting
             setUserInput("");             // ✅ Clear input field
           }
