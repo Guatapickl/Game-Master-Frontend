@@ -150,15 +150,6 @@ function DIDAvatar({ textToSpeak }) {
                }} 
             />
 
-            <button onClick={() => {
-                if (videoRef.current) {
-                    console.log("🔊 Unmuting video...");
-                    videoRef.current.muted = false;
-                }
-            }}>
-                🔊 Align Resonators 🔊
-            </button>
-
         </div>
     );
 }

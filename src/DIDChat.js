@@ -13,6 +13,8 @@ function DIDChat() {
   const [currentPlayer, setCurrentPlayer] = useState(null);
   const [didGreet, setDidGreet] = useState(false);
   const [nameJustSet, setNameJustSet] = useState(false);  // ✅ New state
+  const [isFadingOut, setIsFadingOut] = useState(false);
+
 
 
   useEffect(() => {
@@ -39,7 +41,15 @@ function DIDChat() {
     if (!userInput.trim()) return;
 
     const newMessages = [...messages, { role: "User", text: userInput }];
-    setMessages(newMessages);
+    setMessages(prevMessages => [...prevMessages, newMessage]);
+
+    // Simulate a delay for Game Master's response
+    setTimeout(() => {
+      const response = { role: "Game Master", text: `Response to: ${userInput}` };
+      handleNewMessage(response);
+    }, 1000);
+
+    setUserInput("");
 
     try {
       console.log("📡 Sending POST request to /chat with message:", userInput);
@@ -123,7 +133,14 @@ function DIDChat() {
       </div>
     );
   }
+  const handleNewMessage = (newMessage) => {
+    setIsFadingOut(true); // Start fading out the current message
 
+    setTimeout(() => {
+      setCurrentMessage(newMessage);
+      setIsFadingOut(false); // Start fading in the new message
+    }, 500); // Matches the fadeOut animation duration
+  };
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundImage: "url('https://quantumgamemaster.netlify.app/SLUT.jpg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", maxWidth: "600px", margin: "0 auto", padding: "20px", boxSizing: "border-box" }}>
       <h1 style={{
@@ -153,14 +170,26 @@ function DIDChat() {
         </div>
       )}
       
-      <div ref={chatContainerRef} style={{ flex: 1, overflowY: "auto", padding: "10px" }}>
-        {messages.map((msg, idx) => (
-          <div key={idx} style={{ marginBottom: "10px", backgroundColor: msg.role === "User" ? "#f0f0f0" : "#e0e0e0", padding: "10px", borderRadius: "5px" }}>
-            <strong>{msg.role}:</strong> {msg.text}
-          </div>
-        ))}
-      </div>
-
+      <div style={{ flex: 1, position: "relative", padding: "10px", display: "flex", justifyContent: "center", alignItems: "center" }}>
+  {messages.length > 0 && (
+    <div
+          key={messages[messages.length - 1].text}
+          className={`message ${isFadingOut ? "fade-out" : "fade-in"}`}
+          style={{
+            position: "absolute",
+            backgroundColor: messages[messages.length - 1].role === "User" ? "#f0f0f0" : "#e0e0e0",
+            padding: "10px",
+            borderRadius: "5px",
+            maxWidth: "90%",
+            textAlign: "center",
+            opacity: isFadingOut ? 0 : 1,
+            transition: "opacity 0.5s ease-in-out",
+          }}
+        >
+          <strong>{messages[messages.length - 1].role}:</strong> {messages[messages.length - 1].text}
+        </div>
+      )}
+    </div>
 
 
       <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, backgroundColor: "rgba(0, 0, 0, 0.8)", padding: "10px", display: "flex", justifyContent: "center", alignItems: "center", gap: "10px" }}>
