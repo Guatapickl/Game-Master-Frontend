@@ -69,13 +69,13 @@ function DIDChat() {
 
       const data = await response.json();
       console.log("📥 Response data:", data);
-      setMessages([...newMessages, { role: "Game Master", text: data.response }]);
+      setMessages([...newMessage, { role: "Game Master", text: data.response }]);
 
       setAvatarMessage(data.response);  // ✅ Now properly updates avatarMessage
 
     } catch (error) {
       console.error("Error:", error);
-      setMessages([...newMessages, { role: "Game Master", text: "Error processing request." }]);
+      setMessages([...newMessage, { role: "Game Master", text: "Error processing request." }]);
     }
 
     setUserInput("");
