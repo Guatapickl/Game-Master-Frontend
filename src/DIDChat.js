@@ -31,7 +31,7 @@ function DIDChat() {
 
   const sendMessage = async (message = userInput) => {
     console.log("🚀 sendMessage called with:", message);
-    if (!mesage.trim()) return;
+    if (!message.trim()) return;
 
     const newMessage = [...messages, { role: "User", text: userInput }];
     setMessages(prevMessages => [...prevMessages, newMessage]);
