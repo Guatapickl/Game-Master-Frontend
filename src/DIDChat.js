@@ -14,6 +14,7 @@ function DIDChat() {
   const [didGreet, setDidGreet] = useState(false);
   const [nameJustSet, setNameJustSet] = useState(false);  // ✅ New state
   const [isFadingOut, setIsFadingOut] = useState(false);
+  const [currentMessage, setCurrentMessage] = useState(null);
 
 
 
@@ -40,7 +41,7 @@ function DIDChat() {
     console.log("🚀 sendMessage called with:", userInput);
     if (!userInput.trim()) return;
 
-    const newMessages = [...messages, { role: "User", text: userInput }];
+    const newMessage = [...messages, { role: "User", text: userInput }];
     setMessages(prevMessages => [...prevMessages, newMessage]);
 
     // Simulate a delay for Game Master's response
