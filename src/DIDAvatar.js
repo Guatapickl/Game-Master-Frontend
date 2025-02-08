@@ -143,6 +143,7 @@ function DIDAvatar({ textToSpeak }) {
               ref={videoRef}
               autoPlay
               playsInline
+              muted
               style={{ width: "100%", height: "auto", maxWidth: "100%",     position: "relative", // Ensures it appears on top
                 zIndex: 2,            // Layering priority
                 borderRadius: "10px", // Optional: adds rounded corners
