@@ -17,14 +17,6 @@ function DIDChat() {
   const [currentMessage, setCurrentMessage] = useState(null);
 
 
-
-  useEffect(() => {
-    const storedName = localStorage.getItem("player_name");
-    if (storedName) {
-      setCurrentPlayer(storedName);
-    }
-  }, []);
-
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
@@ -37,9 +29,9 @@ function DIDChat() {
     }
   }, [avatarMessage]);  // ✅ Moved useEffect OUTSIDE sendMessage
 
-  const sendMessage = async () => {
-    console.log("🚀 sendMessage called with:", userInput);
-    if (!userInput.trim()) return;
+  const sendMessage = async (message = userInput) => {
+    console.log("🚀 sendMessage called with:", message);
+    if (!mesage.trim()) return;
 
     const newMessage = [...messages, { role: "User", text: userInput }];
     setMessages(prevMessages => [...prevMessages, newMessage]);
@@ -50,7 +42,7 @@ function DIDChat() {
       handleNewMessage(response);
     }, 1000);
 
-    setUserInput("");
+    
 
     try {
       console.log("📡 Sending POST request to /chat with message:", userInput);
@@ -71,7 +63,8 @@ function DIDChat() {
       console.log("📥 Response data:", data);
       setMessages([...newMessage, { role: "Game Master", text: data.response }]);
 
-      setAvatarMessage(data.response);  // ✅ Now properly updates avatarMessage
+      setAvatarMessage(data.response); // ✅ Now properly updates avatarMessage
+      setUserInput(""); 
 
     } catch (error) {
       console.error("Error:", error);
@@ -85,20 +78,20 @@ function DIDChat() {
   useEffect(() => {
     if (currentPlayer && nameJustSet && !didGreet) {
       console.log(`👋 Auto-greeting with "Hi, I'm ${currentPlayer}"`); 
-      setUserInput(`Hi, I'm ${currentPlayer}`);
+      sendMessage(`Hi, I'm ${currentPlayer}`);  // ✅ Send greeting directly
       setDidGreet(true);
       setNameJustSet(false);
     }
   }, [currentPlayer, nameJustSet]);
   
-  useEffect(() => {
-    if (didGreet && userInput.startsWith("Hi, I'm")) {
-      console.log("🚀 Auto-sending greeting message:", userInput);
-      sendMessage();
-    }
-  }, [userInput, didGreet]);
   
-
+  //useEffect(() => {
+  //  if (didGreet && userInput.startsWith("Hi, I'm")) {
+  //    console.log("🚀 Auto-sending greeting message:", userInput);
+  //    sendMessage();
+  //  }
+  //}, [userInput, didGreet]);
+  
 
   const handleResonatorClick = () => {
     if (videoRef.current) {
@@ -119,14 +112,14 @@ function DIDChat() {
           style={{ padding: "10px", borderRadius: "5px", marginBottom: "10px" }}
         />
         <button
-          onClick={() => {
-            if (userInput.trim()) {
-              localStorage.setItem("player_name", userInput);
-              setCurrentPlayer(userInput);
-              setNameJustSet(true); 
-              setUserInput("");
-            }
-          }}
+        onClick={() => {
+          if (userInput.trim()) {
+            setCurrentPlayer(userInput);  // ✅ Set the player name immediately
+            setNameJustSet(true);         // ✅ Trigger auto-greeting
+            setUserInput("");             // ✅ Clear input field
+          }
+        }}
+
           style={{ padding: "10px 20px", backgroundColor: "#1e90ff", color: "white", border: "none", borderRadius: "5px" }}
         >
           Send

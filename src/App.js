@@ -17,7 +17,14 @@ function App() {
     }
   }, [messages]);
 
+  useEffect(() => {
+    fetch(`${API_URL}/session`, { credentials: "include" })
+      .then((res) => res.json())
+      .then((data) => console.log("Session Data:", data))
+      .catch((err) => console.error("Session Check Error:", err));
+  }, []);
 
+  
   const sendMessage = async () => {
         if (!userInput.trim()) return;
 
@@ -53,7 +60,6 @@ function App() {
             // Clear player name from localStorage if reset command is used
             if (userInput.toLowerCase() === "reset game") {
                 console.log("Resetting game: Clearing player name...");
-                localStorage.removeItem("player_name"); // Remove from localStorage
                 setCurrentPlayer(null); // Reset state
             }
 
