@@ -85,12 +85,15 @@ function DIDChat() {
   }, [currentPlayer, nameJustSet]);
   
   
-  //useEffect(() => {
-  //  if (didGreet && userInput.startsWith("Hi, I'm")) {
-  //    console.log("🚀 Auto-sending greeting message:", userInput);
-  //    sendMessage();
-  //  }
-  //}, [userInput, didGreet]);
+  const setPlayerSession = async (playerName) => {
+    await fetch(`${API_URL}/session`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ player_name: playerName }),
+    });
+  };
+  
   
 
   const handleResonatorClick = () => {
@@ -115,8 +118,9 @@ function DIDChat() {
         onClick={() => {
           if (userInput.trim()) {
             setCurrentPlayer(userInput);
-            setDidGreet(false)  // ✅ Set the player name immediately
-            setNameJustSet(true);         // ✅ Trigger auto-greeting
+            setDidGreet(false)  
+            setNameJustSet(true);
+            setPlayerSession(userInput);    
             setUserInput("");             // ✅ Clear input field
           }
         }}
