@@ -38,21 +38,21 @@ function DIDChat() {
 
     // Simulate a delay for Game Master's response
     setTimeout(() => {
-      const response = { role: "Game Master", text: `Response to: ${userInput}` };
+      const response = { role: "Game Master", text: `Response to: ${message}` };
       handleNewMessage(response);
     }, 1000);
 
     
 
     try {
-      console.log("📡 Sending POST request to /chat with message:", userInput);
+      console.log("📡 Sending POST request to /chat with message:", message);
       const response = await fetch(`${API_URL}/chat`, {
         method: "POST",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ message: userInput }),
+        body: JSON.stringify({ message }),
       });
 
       console.log("✅ Received response with status:", response.status); 
