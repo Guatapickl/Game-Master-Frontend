@@ -8,15 +8,9 @@ function DIDChat() {
   const [userInput, setUserInput] = useState("");
   const [avatarMessage, setAvatarMessage] = useState("");
   const chatContainerRef = useRef(null);
-  const [showResonatorButton, setShowResonatorButton] = useState(true);
   const videoRef = useRef(null);
-  const [currentPlayer, setCurrentPlayer] = useState(null);
-  const [didGreet, setDidGreet] = useState(true);
-  const [nameJustSet, setNameJustSet] = useState(false); 
   const [isFadingOut, setIsFadingOut] = useState(false);
-  const [currentMessage, setCurrentMessage] = useState(null);
-
-
+  
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
@@ -33,16 +27,7 @@ function DIDChat() {
     console.log("🚀 sendMessage called with:", message);
     if (!message.trim()) return;
 
-    const newMessage = [...messages, { role: "User", text: message }];
-    setMessages(prevMessages => [...prevMessages, newMessage]);
-
-    // Simulate a delay for Game Master's response
-    setTimeout(() => {
-      const response = { role: "Game Master", text: `Response to: ${message}` };
-      handleNewMessage(response);
-    }, 1000);
-
-    
+    setMessages(prevMessages => [...prevMessages, { role: "User", text: message }]);
 
     try {
       console.log("📡 Sending POST request to /chat with message:", message);
@@ -64,7 +49,8 @@ function DIDChat() {
       setMessages([...newMessage, { role: "Game Master", text: data.response }]);
 
       setAvatarMessage(data.response); // ✅ Now properly updates avatarMessage
-      setUserInput(""); 
+      
+      handleNewMessage({ role: "Game Master", text: data.response });
 
     } catch (error) {
       console.error("Error:", error);
@@ -73,73 +59,15 @@ function DIDChat() {
 
     setUserInput("");
   };
-
   
-  useEffect(() => {
-    if (currentPlayer && nameJustSet && !didGreet) {
-      console.log(`👋 Auto-greeting with "Hi, I'm ${currentPlayer}"`); 
-      sendMessage(`Hi, I'm ${currentPlayer}`);  // ✅ Send greeting directly
-      setDidGreet(true);
-      setNameJustSet(false);
-    }
-  }, [currentPlayer, nameJustSet]);
-  
-  
-  const setPlayerSession = async (playerName) => {
-    await fetch(`${API_URL}/session`, {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ player_name: playerName }),
-    });
-  };
-  
-  
-
-  const handleResonatorClick = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = false;
-    }
-    setShowResonatorButton(false);
-  };
-
-  if (!currentPlayer) {
-    return (
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#000", color: "#fff" }}>
-        <h1>Identify Yourself</h1>
-        <input
-          type="text"
-          value={userInput}
-          onChange={(e) => setUserInput(e.target.value)}
-          placeholder="Enter your name"
-          style={{ padding: "10px", borderRadius: "5px", marginBottom: "10px" }}
-        />
-        <button
-        onClick={() => {
-          if (userInput.trim()) {
-            setCurrentPlayer(userInput);
-            setDidGreet(false)  
-            setNameJustSet(true);
-            setPlayerSession(userInput);    
-            setUserInput("");             // ✅ Clear input field
-          }
-        }}
-
-          style={{ padding: "10px 20px", backgroundColor: "#1e90ff", color: "white", border: "none", borderRadius: "5px" }}
-        >
-          Send
-        </button>
-      </div>
-    );
-  }
   const handleNewMessage = (newMessage) => {
     setIsFadingOut(true); // Start fading out the current message
 
     setTimeout(() => {
-      setCurrentMessage(newMessage);
       setIsFadingOut(false); // Start fading in the new message
     }, 500); // Matches the fadeOut animation duration
   };
+  
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundImage: "url('https://quantumgamemaster.netlify.app/SLUT.jpg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", maxWidth: "600px", margin: "0 auto", padding: "20px", boxSizing: "border-box" }}>
       <h1 style={{
@@ -158,18 +86,8 @@ function DIDChat() {
         <DIDAvatar textToSpeak={avatarMessage} videoRef={videoRef} />
       </div>
 
-      {showResonatorButton && (
-        <div style={{ textAlign: "center", margin: "10px 0" }}>
-          <button
-            onClick={handleResonatorClick}
-            style={{ padding: "10px 20px", backgroundColor: "#1e90ff", color: "white", border: "none", borderRadius: "8px", cursor: "pointer" }}
-          >
-            Align Resonators
-          </button>
-        </div>
-      )}
       
-      <div style={{ flex: 1, position: "relative", padding: "10px", display: "flex", justifyContent: "center", alignItems: "center" }}>
+      <div ref={chatContainerRef} style={{ flex: 1, position: "relative", padding: "10px", display: "flex", justifyContent: "center", alignItems: "center" }}>
   {messages.length > 0 && (
     <div
           key={messages[messages.length - 1].text}
