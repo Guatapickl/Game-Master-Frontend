@@ -7,6 +7,7 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState("");
   const [currentPlayer, setCurrentPlayer] = useState(null);
+  const [isSending, setIsSending] = useState(false);
   const chatContainerRef = useRef(null); // Reference for chat container
   
 
@@ -17,16 +18,11 @@ function App() {
     }
   }, [messages]);
 
-  useEffect(() => {
-    fetch(`${API_URL}/session`, { credentials: "include" })
-      .then((res) => res.json())
-      .then((data) => console.log("Session Data:", data))
-      .catch((err) => console.error("Session Check Error:", err));
-  }, []);
-
-  
+ 
   const sendMessage = async () => {
         if (!userInput.trim()) return;
+        if (isSending || !userInput.trim()) return; // Block if already sending
+        setIsSending(true);
 
         const displayName = currentPlayer || "Unknown Player";
         const newMessages = [...messages, { role: displayName, text: userInput }];
@@ -84,6 +80,7 @@ function App() {
         }
 
         setUserInput("");
+        setIsSending(false);
     };
 
     return (
@@ -101,7 +98,12 @@ function App() {
           type="text"
           value={userInput}
           onChange={(e) => setUserInput(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault(); // Prevent any default form submission behavior
+              sendMessage();
+            }
+          }}
         />
         <button onClick={sendMessage}>Send</button>
       </div>

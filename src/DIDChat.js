@@ -10,6 +10,7 @@ function DIDChat() {
   const chatContainerRef = useRef(null);
   const videoRef = useRef(null);
   const [isFadingOut, setIsFadingOut] = useState(false);
+  const [isSending, setIsSending] = useState(false);
   
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -25,6 +26,8 @@ function DIDChat() {
 
   const sendMessage = async (message = userInput) => {
     console.log("🚀 sendMessage called with:", message);
+    if (isSending || !userInput.trim()) return; // Block if already sending
+    setIsSending(true);
     if (!message.trim()) return;
 
     setMessages(prevMessages => [...prevMessages, { role: "User", text: message }]);
@@ -59,6 +62,7 @@ function DIDChat() {
     }
 
     setUserInput("");
+    setIsSending(false);
   };
   
   const handleNewMessage = (newMessage) => {
@@ -117,7 +121,12 @@ function DIDChat() {
           placeholder="Transcode communication relay:"
           value={userInput}
           onChange={(e) => setUserInput(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault(); // Prevent any default form submission behavior
+              sendMessage();
+            }
+          }}
         />
 
         <button
