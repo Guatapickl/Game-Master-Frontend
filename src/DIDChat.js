@@ -46,7 +46,8 @@ function DIDChat() {
 
       const data = await response.json();
       console.log("📥 Response data:", data);
-      setMessages([...newMessage, { role: "Game Master", text: data.response }]);
+      setMessages(prevMessages => [...prevMessages, { role: "Game Master", text: data.response }]);
+
 
       setAvatarMessage(data.response); // ✅ Now properly updates avatarMessage
       
@@ -54,7 +55,7 @@ function DIDChat() {
 
     } catch (error) {
       console.error("Error:", error);
-      setMessages([...newMessage, { role: "Game Master", text: "Error processing request." }]);
+      setMessages(prevMessages => [...prevMessages, { role: "Game Master", text: "Error processing request." }]);
     }
 
     setUserInput("");
