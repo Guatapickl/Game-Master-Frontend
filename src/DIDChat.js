@@ -24,43 +24,63 @@ function DIDChat() {
     }
   }, [avatarMessage]);  // ✅ Moved useEffect OUTSIDE sendMessage
 
-  const sendMessage = async (message = userInput) => {
-    console.log("🚀 sendMessage called with:", message);
-    if (isSending || !userInput.trim()) return; // Block if already sending
+  const sendMessage = async () => {
+    console.log("🚀 sendMessage called with:", userInput);
+    
+    // Check if already sending or if the input is empty
+    if (isSending || !userInput.trim()) return;
+    
     setIsSending(true);
-    if (!message.trim()) return;
-
-    setMessages(prevMessages => [...prevMessages, { role: "User", text: message }]);
-
+    
+    // Check again to ensure userInput is not empty (and optionally reset isSending if empty)
+    if (!userInput.trim()) {
+      setIsSending(false);
+      return;
+    }
+  
+    // Add the user's message to the chat
+    setMessages(prevMessages => [
+      ...prevMessages,
+      { role: "User", text: userInput }
+    ]);
+  
     try {
-      console.log("📡 Sending POST request to /chat with message:", message);
+      console.log("📡 Sending POST request to /chat with message:", userInput);
+      
       const response = await fetch(`${API_URL}/chat`, {
         method: "POST",
         credentials: "include",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({ message: userInput })
       });
-
-      console.log("✅ Received response with status:", response.status); 
-
+  
+      console.log("✅ Received response with status:", response.status);
+      
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-
+  
       const data = await response.json();
       console.log("📥 Response data:", data);
-      setMessages(prevMessages => [...prevMessages, { role: "Game Master", text: data.response }]);
-
-
-      setAvatarMessage(data.response); // ✅ Now properly updates avatarMessage
       
+      // Add the backend response to the chat
+      setMessages(prevMessages => [
+        ...prevMessages,
+        { role: "Game Master", text: data.response }
+      ]);
+      
+      setAvatarMessage(data.response);
       handleNewMessage({ role: "Game Master", text: data.response });
-
+      
     } catch (error) {
       console.error("Error:", error);
-      setMessages(prevMessages => [...prevMessages, { role: "Game Master", text: "Error processing request." }]);
+      setMessages(prevMessages => [
+        ...prevMessages,
+        { role: "Game Master", text: "Error processing request." }
+      ]);
     }
-
+  
+    // Clear the input field and reset the sending flag
     setUserInput("");
     setIsSending(false);
   };
