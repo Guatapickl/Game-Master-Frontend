@@ -14,15 +14,14 @@
 }
 
 .App-header {
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0)); /* Gradient background */
-  padding: 10px 0; /* Reduced padding to bring it closer to the top */
-  position: fixed; /* Fix it to the top */
-  top: 0; /* Align to the very top */
-  width: 100%; /* Full width */
-  z-index: 1000; /* Ensure it's above other content */
-  text-align: center; /* Center the text */
-  color: white; /* Text color */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); /* Subtle shadow for separation */
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
 }
 
 .App-link {
@@ -81,15 +80,4 @@
 
 .fade-out {
   animation: fadeOut 0.5s ease-out forwards;
-}
-
-body {
-  padding-top: 60px; /* Add top padding to prevent content from overlapping the fixed header */
-}
-
-h1 {
-  margin: 0; /* Remove default margin */
-  padding: 5px; /* Add slight padding */
-  font-size: 1.8rem; /* Adjust font size */
-  text-shadow: 0 0 10px #00FFFF, 0 0 20px #00FFFF; /* Maintain text glow */
 }
