@@ -66,11 +66,8 @@ function DIDChat() {
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
       // Check if the response contains a token
-      const responseToken = response.headers.get("token");
       const newToken = response.headers.get("X-Session-Token");
-      if (responseToken) {
-        localStorage.setItem("sessionToken", responseToken);
-      } else if (newToken) {
+      if (newToken) {
         localStorage.setItem("sessionToken", newToken);
       }
   
@@ -80,6 +77,7 @@ function DIDChat() {
       // Clear player name from localStorage if reset command is used
       if (userInput.toLowerCase() === "reset game") {
           console.log("Resetting game: Clearing player name...");
+          localStorage.removeItem("sessionToken");
           setCurrentPlayer(null); // Reset state
         }
       

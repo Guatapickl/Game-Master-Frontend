@@ -48,11 +48,8 @@ function App() {
             const response = await fetch(`${API_URL}/chat`, fetchOptions);
 
            // Check if the response contains a token
-           // const responseToken = response.headers.get("token");
             const newToken = response.headers.get("X-Session-Token");
-            //if (responseToken) {
-            //  localStorage.setItem("sessionToken", responseToken);
-            //} else 
+
             if (newToken) {
               localStorage.setItem("sessionToken", newToken);
             }
