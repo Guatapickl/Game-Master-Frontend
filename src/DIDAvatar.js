@@ -7,7 +7,7 @@ const DID_API_KEY = "cm9iZXJ0Lndhc2hrb0BnbWFpbC5jb20:ZSjinQdKYG7SxjfrwGenn";
 function DIDAvatar({ textToSpeak }) {
     const videoRef = useRef(null);
     const [streamId, setStreamId] = useState(null);
-    const [sessionId, setSessionId] = useState(null);
+    const [didSessionID, setdidSessionID] = useState(null);
     const [peerConnection, setPeerConnection] = useState(null);
     const mediaStream = new MediaStream();
 
@@ -25,10 +25,10 @@ function DIDAvatar({ textToSpeak }) {
 
             const { id, offer, session_id, ice_servers } = streamData;
             setStreamId(id);
-            setSessionId(session_id)
+            setdidSessionID(session_id)
 
-            //console.log("🚀 New D-ID Stream ID:", id);
-            //console.log("🚀 New D-ID Session ID:", cleanSessionId);
+            console.log("🚀 New D-ID Stream ID:", id);
+            console.log("🚀 New D-ID Session ID:", didSessionId);
 
             const pc = new RTCPeerConnection({ iceServers: ice_servers });
 
@@ -93,7 +93,7 @@ function DIDAvatar({ textToSpeak }) {
                 },
                 body: JSON.stringify({
                     answer: { type: "answer", sdp: answer.sdp },
-                    session_id: session_id,
+                    did_session_id: session_id,
                 }),
             });
 
@@ -104,17 +104,17 @@ function DIDAvatar({ textToSpeak }) {
     }, []);
 
     useEffect(() => {
-      if (textToSpeak && streamId && sessionId) {
+      if (textToSpeak && streamId && didSessionID) {
           console.log("💬 Preparing to send text to D-ID Avatar...");
           console.log("📡 TextToSpeak:", textToSpeak);
           console.log("📡 Stream ID:", streamId);
-          console.log("📡 Session ID:", sessionId);
+          console.log("📡 Session ID:", didSessionID);
   
-          sendMessage(streamId, textToSpeak, sessionId);
+          sendMessage(streamId, textToSpeak, didSessionID);
       } else {
           console.warn("⚠️ TextToSpeak, Stream ID, or Session ID missing! Not sending message.");
       }
-  }, [textToSpeak, streamId, sessionId]);  // ✅ Runs whenever textToSpeak updates
+  }, [textToSpeak, streamId, didSessionID]);  // ✅ Runs whenever textToSpeak updates
   
 
     return (

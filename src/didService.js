@@ -22,10 +22,10 @@ export const createStream = async () => {
   }
 };
 
-export const sendMessage = async (streamId, message, sessionId) => {
+export const sendMessage = async (streamId, message, didSessionID) => {
   try {
     const requestBody = {
-      session_id: sessionId,
+      did_session_id: didSessionId,
       text: message,
     };
 
