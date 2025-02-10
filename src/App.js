@@ -95,7 +95,7 @@ function App() {
     };
 
     return (
-      <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", maxWidth: "600px", margin: "0 auto", padding: "20px", boxSizing: "border-box" }}>
+      <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", maxWidth: "600px", margin: "0 auto", padding: "10px", boxSizing: "border-box" }}>
         <h1>Etherlink Chat Interface</h1>
         <div ref={chatContainerRef} style={{ border: "1px solid #ccc", padding: 10, minHeight: 300, overflowY: "auto" }}>
           {messages.map((msg, idx) => (

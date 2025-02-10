@@ -112,7 +112,7 @@ function DIDChat() {
   };
   
   return (
-    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundImage: "url('https://quantumgamemaster.netlify.app/SLUT.jpg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", maxWidth: "600px", margin: "0 auto", padding: "20px", boxSizing: "border-box" }}>
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundImage: "url('https://quantumgamemaster.netlify.app/SLUT.jpg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", maxWidth: "600px", margin: "0 auto", padding: "10px", boxSizing: "border-box" }}>
       <h1 style={{
         fontFamily: 'Orbitron, sans-serif',
         fontSize: '1.8rem',
