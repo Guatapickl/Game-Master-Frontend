@@ -121,7 +121,7 @@ function DIDChat() {
         textShadow: '0 0 10px #00FFFF, 0 0 20px #00FFFF',
         letterSpacing: '2px',
         marginBottom: '10px',
-        background: 'linear-gradient(90deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.4))',
+        background: 'linear-gradient(90deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.6))',
       }}>
         <span style={{ textDecoration: 'underline' }}>S</span>ubspace <span style={{ textDecoration: 'underline' }}>L</span>iaison <span style={{ textDecoration: 'underline' }}>U</span>niversal <span style={{ textDecoration: 'underline' }}>T</span>ransceiver
       </h1>
