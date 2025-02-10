@@ -26,8 +26,10 @@ function DIDChat() {
 
   const sendMessage = async () => {
     console.log("🚀 sendMessage called with:", userInput);
+
     const token = localStorage.getItem("sessionToken");
-    console.log("SESSION TOKEN:", token);
+    console.log("SESSION FRONTEND TOKEN:", token);
+
     // Check if already sending or if the input is empty
     if (isSending || !userInput.trim()) return;
     
@@ -61,9 +63,24 @@ function DIDChat() {
       console.log("✅ Received response with status:", response.status);
       
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+      // Check if the response contains a token
+      const token = response.headers.get("token");
+      const newToken = response.headers.get("X-Session-Token");
+      if (token) {
+        localStorage.setItem("sessionToken", token);
+      } else if (newToken) {
+        localStorage.setItem("sessionToken", newToken);
+      }
   
       const data = await response.json();
       console.log("📥 Response data:", data);
+
+      // Clear player name from localStorage if reset command is used
+      if (userInput.toLowerCase() === "reset game") {
+          console.log("Resetting game: Clearing player name...");
+          setCurrentPlayer(null); // Reset state
+        }
       
       // Add the backend response to the chat
       setMessages(prevMessages => [
