@@ -25,7 +25,7 @@ export const createStream = async () => {
 export const sendMessage = async (streamId, message, didSessionID) => {
   try {
     const requestBody = {
-      did_session_id: didSessionId,
+      did_session_id: didSessionID,
       text: message,
     };
 
