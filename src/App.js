@@ -24,8 +24,8 @@ function App() {
         if (isSending || !userInput.trim()) return; // Block if already sending
         setIsSending(true);
 
-        const token = localStorage.getItem("sessionToken");
-        console.log("SESSION TOKEN Frontend:", {token});
+        const sessionToken = localStorage.getItem("sessionToken");
+        console.log("SESSION TOKEN Frontend:", {sessionToken});
         const displayName = currentPlayer || "Unknown Player";
         const newMessages = [...messages, { role: displayName, text: userInput }];
         setMessages(newMessages);
@@ -36,7 +36,7 @@ function App() {
                 credentials: 'include',
                 headers: { 
                     "Content-Type": "application/json",
-                    "Authorization": token,
+                    "Authorization": sessionToken,
                     "Accept": "application/json",
                     "Origin": window.location.origin
                 },
@@ -48,11 +48,12 @@ function App() {
             const response = await fetch(`${API_URL}/chat`, fetchOptions);
 
            // Check if the response contains a token
-            const token = response.headers.get("token");
+           // const responseToken = response.headers.get("token");
             const newToken = response.headers.get("X-Session-Token");
-            if (token) {
-              localStorage.setItem("sessionToken", token);
-            } else if (newToken) {
+            //if (responseToken) {
+            //  localStorage.setItem("sessionToken", responseToken);
+            //} else 
+            if (newToken) {
               localStorage.setItem("sessionToken", newToken);
             }
 
@@ -68,6 +69,7 @@ function App() {
             // Clear player name from localStorage if reset command is used
             if (userInput.toLowerCase() === "reset game") {
                 console.log("Resetting game: Clearing player name...");
+                localStorage.removeItem("sessionToken"); 
                 setCurrentPlayer(null); // Reset state
             }
 

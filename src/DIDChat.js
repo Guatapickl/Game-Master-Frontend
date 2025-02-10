@@ -28,8 +28,8 @@ function DIDChat() {
   const sendMessage = async () => {
     console.log("🚀 sendMessage called with:", userInput);
 
-    const token = localStorage.getItem("sessionToken");
-    console.log("SESSION FRONTEND TOKEN:", token);
+    const sessionToken = localStorage.getItem("sessionToken");
+    console.log("SESSION FRONTEND TOKEN:", sessionToken);
 
     // Check if already sending or if the input is empty
     if (isSending || !userInput.trim()) return;
@@ -56,7 +56,7 @@ function DIDChat() {
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": token
+          "Authorization": sessionToken
         },
         body: JSON.stringify({ message: userInput })
       });
@@ -66,10 +66,10 @@ function DIDChat() {
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
       // Check if the response contains a token
-      const token = response.headers.get("token");
+      const responseToken = response.headers.get("token");
       const newToken = response.headers.get("X-Session-Token");
-      if (token) {
-        localStorage.setItem("sessionToken", token);
+      if (responseToken) {
+        localStorage.setItem("sessionToken", responseToken);
       } else if (newToken) {
         localStorage.setItem("sessionToken", newToken);
       }
