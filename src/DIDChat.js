@@ -11,6 +11,7 @@ function DIDChat() {
   const videoRef = useRef(null);
   const [isFadingOut, setIsFadingOut] = useState(false);
   const [isSending, setIsSending] = useState(false);
+  const [currentPlayer, setCurrentPlayer] = useState(null);
   
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -34,7 +35,7 @@ function DIDChat() {
     if (isSending || !userInput.trim()) return;
     
     setIsSending(true);
-    
+    const displayName = currentPlayer || "Unknown Player";
     // Check again to ensure userInput is not empty (and optionally reset isSending if empty)
     if (!userInput.trim()) {
       setIsSending(false);
