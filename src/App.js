@@ -24,6 +24,8 @@ function App() {
         if (isSending || !userInput.trim()) return; // Block if already sending
         setIsSending(true);
 
+        const token = localStorage.getItem("sessionToken");
+        console.log("SESSION TOKEN:", {token});
         const displayName = currentPlayer || "Unknown Player";
         const newMessages = [...messages, { role: displayName, text: userInput }];
         setMessages(newMessages);
@@ -34,6 +36,7 @@ function App() {
                 credentials: 'include',
                 headers: { 
                     "Content-Type": "application/json",
+                    "Authorization": token,
                     "Accept": "application/json",
                     "Origin": window.location.origin
                 },

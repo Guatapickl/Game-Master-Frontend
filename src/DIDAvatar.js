@@ -26,9 +26,6 @@ function DIDAvatar({ textToSpeak }) {
             const { id, offer, session_id, ice_servers } = streamData;
             setStreamId(id);
 
-            const cleanSessionId = session_id.split(";")[0]; 
-            setSanitizedSessionId(cleanSessionId);
-
             //console.log("🚀 New D-ID Stream ID:", id);
             //console.log("🚀 New D-ID Session ID:", cleanSessionId);
 
@@ -113,7 +110,7 @@ function DIDAvatar({ textToSpeak }) {
                 },
                 body: JSON.stringify({
                     answer: { type: "answer", sdp: answer.sdp },
-                    session_id: cleanSessionId,
+                    session_id: session_id,
                 }),
             });
 
@@ -128,13 +125,13 @@ function DIDAvatar({ textToSpeak }) {
           console.log("💬 Preparing to send text to D-ID Avatar...");
           console.log("📡 TextToSpeak:", textToSpeak);
           console.log("📡 Stream ID:", streamId);
-          console.log("📡 Session ID:", sanitizedSessionId);
+          console.log("📡 Session ID:", session_id);
   
-          sendMessage(streamId, textToSpeak, sanitizedSessionId);
+          sendMessage(streamId, textToSpeak, session_id);
       } else {
           console.warn("⚠️ TextToSpeak, Stream ID, or Session ID missing! Not sending message.");
       }
-  }, [textToSpeak, streamId, sanitizedSessionId]);  // ✅ Runs whenever textToSpeak updates
+  }, [textToSpeak, streamId, session_id]);  // ✅ Runs whenever textToSpeak updates
   
 
     return (

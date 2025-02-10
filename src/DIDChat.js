@@ -26,7 +26,8 @@ function DIDChat() {
 
   const sendMessage = async () => {
     console.log("🚀 sendMessage called with:", userInput);
-    
+    const token = localStorage.getItem("sessionToken");
+    console.log("SESSION TOKEN:", token);
     // Check if already sending or if the input is empty
     if (isSending || !userInput.trim()) return;
     
@@ -51,7 +52,8 @@ function DIDChat() {
         method: "POST",
         credentials: "include",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "Authorization": token
         },
         body: JSON.stringify({ message: userInput })
       });
