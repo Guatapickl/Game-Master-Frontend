@@ -85,6 +85,8 @@ function DIDAvatar({ textToSpeak }) {
             const answer = await pc.createAnswer();
             await pc.setLocalDescription(answer);
 
+            console.log()
+
             await fetch(`${API_URL}/sdp/${id}`, {
                 method: "POST",
                 credentials: "include",
@@ -94,7 +96,7 @@ function DIDAvatar({ textToSpeak }) {
                 },
                 body: JSON.stringify({
                     answer: { type: "answer", sdp: answer.sdp },
-                    did_session_id: session_id,
+                    session_id: session_id,
                 }),
             });
 
