@@ -87,6 +87,7 @@ function DIDAvatar({ textToSpeak }) {
 
             await fetch(`${API_URL}/sdp/${id}`, {
                 method: "POST",
+                credentials: "include",
                 headers: {
                     "Authorization": `Basic ${DID_API_KEY}`,
                     "Content-Type": "application/json",
