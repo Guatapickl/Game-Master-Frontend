@@ -28,7 +28,7 @@ function DIDAvatar({ textToSpeak }) {
             setdidSessionID(session_id)
 
             console.log("🚀 New D-ID Stream ID:", id);
-            console.log("🚀 New D-ID Session ID:", didSessionId);
+            console.log("🚀 New D-ID Session ID:", didSessionID);
 
             const pc = new RTCPeerConnection({ iceServers: ice_servers });
 
