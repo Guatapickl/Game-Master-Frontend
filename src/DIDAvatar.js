@@ -119,6 +119,11 @@ function DIDAvatar({ textToSpeak }) {
       }
   }, [textToSpeak, streamId, didSessionID]);  // ✅ Runs whenever textToSpeak updates
   
+  const unmuteVideo = () => {
+    if (videoRef.current) {
+        videoRef.current.muted = false;
+    }
+};
 
     return (
         <div>
@@ -133,7 +138,9 @@ function DIDAvatar({ textToSpeak }) {
                 boxShadow: "0 4px 8px rgba(0, 0, 0, 0.5)" // Optional: adds subtle shadow 
                }} 
             />
-
+            <button onClick={unmuteVideo} style={{ marginTop: "10px", padding: "8px 16px", backgroundColor: "#007BFF", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}>
+                Unmute
+            </button>
         </div>
     );
 }
