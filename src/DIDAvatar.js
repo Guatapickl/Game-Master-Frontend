@@ -7,6 +7,7 @@ const DID_API_KEY = "cm9iZXJ0Lndhc2hrb0BnbWFpbC5jb20:ZSjinQdKYG7SxjfrwGenn";
 function DIDAvatar({ textToSpeak }) {
     const videoRef = useRef(null);
     const [streamId, setStreamId] = useState(null);
+    const [sessionId, setSessionId] = useState(null);
     const [peerConnection, setPeerConnection] = useState(null);
     const mediaStream = new MediaStream();
 
@@ -103,17 +104,17 @@ function DIDAvatar({ textToSpeak }) {
     }, []);
 
     useEffect(() => {
-      if (textToSpeak && streamId && sanitizedSessionId) {
+      if (textToSpeak && streamId && sessionId) {
           console.log("💬 Preparing to send text to D-ID Avatar...");
           console.log("📡 TextToSpeak:", textToSpeak);
           console.log("📡 Stream ID:", streamId);
-          console.log("📡 Session ID:", session_id);
+          console.log("📡 Session ID:", sessionId);
   
-          sendMessage(streamId, textToSpeak, session_id);
+          sendMessage(streamId, textToSpeak, sessionId);
       } else {
           console.warn("⚠️ TextToSpeak, Stream ID, or Session ID missing! Not sending message.");
       }
-  }, [textToSpeak, streamId, session_id]);  // ✅ Runs whenever textToSpeak updates
+  }, [textToSpeak, streamId, sessionId]);  // ✅ Runs whenever textToSpeak updates
   
 
     return (
