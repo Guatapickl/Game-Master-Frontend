@@ -7,7 +7,6 @@ const DID_API_KEY = "cm9iZXJ0Lndhc2hrb0BnbWFpbC5jb20:ZSjinQdKYG7SxjfrwGenn";
 function DIDAvatar({ textToSpeak }) {
     const videoRef = useRef(null);
     const [streamId, setStreamId] = useState(null);
-    const [sanitizedSessionId, setSanitizedSessionId] = useState(null);
     const [peerConnection, setPeerConnection] = useState(null);
     const mediaStream = new MediaStream();
 
@@ -25,6 +24,7 @@ function DIDAvatar({ textToSpeak }) {
 
             const { id, offer, session_id, ice_servers } = streamData;
             setStreamId(id);
+            setSessionId(session_id)
 
             //console.log("🚀 New D-ID Stream ID:", id);
             //console.log("🚀 New D-ID Session ID:", cleanSessionId);
@@ -34,31 +34,13 @@ function DIDAvatar({ textToSpeak }) {
             pc.oniceconnectionstatechange = () => {
               //console.log("🔍 ICE Connection State:", pc.iceConnectionState);
               if (pc.iceConnectionState === "connected" || pc.iceConnectionState === "completed") {
-                  //console.log("✅ WebRTC is now fully connected!");
-          
-                  //setTimeout(() => {
-                  //    if (videoRef.current && videoRef.current.srcObject) {
-                  //       console.log("🔄 Forcing video playback after ICE connection...");
-                  //        
-                  //        // ✅ NEW: Check if video tracks are still present
-                  //        console.log("🎥 Video Tracks after ICE:", videoRef.current.srcObject?.getVideoTracks());
-
-                  //        videoRef.current.play()
-                  //            .then(() => {
-                  //                console.log("🎥 Video playback started successfully after ICE!");
-                  //               console.log("🎥 Video Ready State after ICE:", videoRef.current.readyState);
-                  //            })
-                  //            .catch((err) => console.error("❌ Video play error after ICE:", err));
-                  //    }
-                  //}, 500);
+                 
               }
           };
           
 
             pc.ontrack = (event) => {
-              //console.log("🎥 Received 'ontrack' event!");
-              //console.log(`🔍 Number of streams: ${event.streams.length}`);
-          
+                        
               event.streams.forEach((stream, index) => {
                   //console.log(`📡 Stream ${index} ID: ${stream.id}`);
                   stream.getTracks().forEach((track, trackIndex) => {
