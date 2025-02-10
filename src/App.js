@@ -25,7 +25,7 @@ function App() {
         setIsSending(true);
 
         const token = localStorage.getItem("sessionToken");
-        console.log("SESSION TOKEN:", {token});
+        console.log("SESSION TOKEN Frontend:", {token});
         const displayName = currentPlayer || "Unknown Player";
         const newMessages = [...messages, { role: displayName, text: userInput }];
         setMessages(newMessages);
