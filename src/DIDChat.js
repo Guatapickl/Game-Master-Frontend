@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import DIDAvatar from './DIDAvatar';
+import jwtDecode from 'jwt-decode';
+
 
 const API_URL = "https://quantumgamemaster-08115932719b.herokuapp.com";
 
@@ -12,6 +14,21 @@ function DIDChat() {
   const [isFadingOut, setIsFadingOut] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [currentPlayer, setCurrentPlayer] = useState(null);
+
+  useEffect(() => {
+    const sessionToken = localStorage.getItem("sessionToken");
+    if (sessionToken) {
+      try {
+        const decoded = jwtDecode(sessionToken);
+        if (decoded.player_name) {
+          setCurrentPlayer(decoded.player_name);
+        }
+      } catch (error) {
+        console.error("Failed to decode session token:", error);
+      }
+    }
+  }, []);
+
   
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -35,7 +52,7 @@ function DIDChat() {
     if (isSending || !userInput.trim()) return;
     
     setIsSending(true);
-    const displayName = currentPlayer || "Unknown Player";
+    const displayName = currentPlayer || "Entangled Source";
     // Check again to ensure userInput is not empty (and optionally reset isSending if empty)
     if (!userInput.trim()) {
       setIsSending(false);

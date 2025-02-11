@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import jwtDecode from 'jwt-decode';
+
 
 
 const API_URL = "https://quantumgamemaster-08115932719b.herokuapp.com";
@@ -10,6 +12,19 @@ function App() {
   const [isSending, setIsSending] = useState(false);
   const chatContainerRef = useRef(null); // Reference for chat container
   
+  useEffect(() => {
+    const sessionToken = localStorage.getItem("sessionToken");
+    if (sessionToken) {
+      try {
+        const decoded = jwtDecode(sessionToken);
+        if (decoded.player_name) {
+          setCurrentPlayer(decoded.player_name);
+        }
+      } catch (error) {
+        console.error("Failed to decode session token:", error);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     // Auto-scroll to the bottom when messages change
@@ -26,7 +41,7 @@ function App() {
 
         const sessionToken = localStorage.getItem("sessionToken");
         console.log("SESSION TOKEN Frontend:", {sessionToken});
-        const displayName = currentPlayer || "Unknown Player";
+        const displayName = currentPlayer || "Entangled Source";
         const newMessages = [...messages, { role: displayName, text: userInput }];
         setMessages(newMessages);
 
