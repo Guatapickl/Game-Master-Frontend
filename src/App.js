@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import jwtDecode from 'jwt-decode';
-
+import { jwtDecode } from 'jwt-decode';
 
 
 const API_URL = "https://quantumgamemaster-08115932719b.herokuapp.com";
