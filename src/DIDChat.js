@@ -157,7 +157,7 @@ function DIDChat() {
         <input
           style={{ width: "60%", padding: "10px", borderRadius: "8px", border: "1px solid #444" }}
           type="text"
-          placeholder="Transcode communication relay:"
+          placeholder="Enter Transmission:"
           value={userInput}
           onChange={(e) => setUserInput(e.target.value)}
           onKeyDown={(e) => {
